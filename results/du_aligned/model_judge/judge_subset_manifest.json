@@ -1,0 +1,70 @@
+{
+  "target_models": [
+    "70B"
+  ],
+  "n_problems": 46,
+  "problem_indices": [
+    15,
+    25,
+    30,
+    35,
+    50,
+    55,
+    60,
+    80,
+    90,
+    120,
+    125,
+    135,
+    145,
+    150,
+    155,
+    160,
+    170,
+    175,
+    200,
+    205,
+    210,
+    230,
+    240,
+    245,
+    255,
+    260,
+    275,
+    280,
+    285,
+    290,
+    340,
+    345,
+    350,
+    355,
+    365,
+    375,
+    380,
+    385,
+    390,
+    400,
+    410,
+    420,
+    460,
+    470,
+    480,
+    485
+  ],
+  "difficulty_bins": {
+    "hard": 26,
+    "medium": 13,
+    "easy": 61
+  },
+  "selected_per_bin": {
+    "hard": 17,
+    "medium": 13,
+    "easy": 16
+  },
+  "total_judgments": 2208,
+  "judge_source": "deterministic_fallback_heuristic",
+  "judge_modes": [
+    "heuristic_no_reference",
+    "reference_based_diagnostic"
+  ]
+}

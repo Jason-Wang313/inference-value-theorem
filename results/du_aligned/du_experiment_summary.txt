@@ -1,45 +1,78 @@
 DU-ALIGNED THEOREM 1 EXPERIMENT SUMMARY
 
-1. Existing theorem audit
+1. Exact law validation
+- The exact finite empirical selector law with random tie-breaking is validated across 23 models.
 - Overall MAE: 0.000622
-- Models: 23
 - Problems: up to 500 measured per model
 - N values: [1, 2, 4, 8, 16, 32, 48]
 - Tie rate: 0.000134
 - Per-problem vs pooled MAE: 0.000602 vs 0.122364
 
 2. Moment hierarchy
+- AUC (kappa) is exact and complete for N=2 only.
+- For high N, the moment hierarchy (rank-interval moments) is required.
 - AUC-only MAE by N: N=2: 0.000000, N=3: 0.015816, N=4: 0.019492, N=8: 0.032017, N=16: 0.047628, N=32: 0.068146, N=48: 0.082098
 - Moment-predictor MAE by N: N=2: 0.0000000000, N=3: 0.0000000000, N=4: 0.0000000000, N=8: 0.0000000000, N=16: 0.0000000000, N=32: 0.0000000000, N=48: 0.0000000000
-- Main conclusion: kappa exactly controls N=2, but high-N scaling requires the higher rank-interval moments. The moment predictor is exact up to floating-point error.
+- The moment predictor is exact up to floating-point error.
 
 3. Pilot sample complexity
 - K values tested: [8, 16, 24, 32]
 - Held-out MAE trend for N=8: K=8: 0.075, K=16: 0.063, K=24: 0.060, K=32: 0.063
 - Samples needed for MAE < 0.05 / 0.02 / 0.01 if achieved: {'0.05': 16, '0.02': None, '0.01': None}
+- CAVEAT: With only 48 samples/problem, pilot K is capped at ~40. Finite-pilot forecasting is sample-complexity limited.
 
-4. Score-function comparison
-- Best score function at N=48: oracle_correctness_verifier (0.838627)
-- Does theorem predict each score function? Yes, with exact empirical MAE near zero for every tested score.
-- Any score better than mean logprob? The calibrated posterior and oracle/rule-based scores are reported in the table; oracle is labeled as such.
-- Missing score dependencies: total logprob and format/verifier features are not present in the compact measurement JSONs.
+3b. Expanded pilot sample-complexity
+- Models: ['3B', '8B', '70B', 'Qwen397B', 'Mixtral8x22B']
+- Problems: 100 stratified problems
+- K values: [8, 16, 24, 32]
+- Data source: existing_48_samples
+- Note: With 48 samples/problem, maximum pilot K is ~40 (remaining held out for evaluation).
+- Larger K values (64, 96, 128) require additional sample collection beyond the current 48.
 
-5. Verifier extension
+4. Score-function comparison (baseline)
+- Best baseline score function at N=48: oracle_correctness_verifier (0.838627)
+- The theorem predicts each score function with exact empirical MAE near zero.
+- oracle_correctness_verifier is a DIAGNOSTIC UPPER BOUND, not a practical score function.
+
+4b. Expanded score-function comparison
+- Score functions tested on the raw-feature subset: ['answer_format_score', 'calibrated_binned_posterior', 'calibrated_gbdt_verifier_score', 'calibrated_logistic_verifier_score', 'gbdt_verifier_score', 'length_penalized_logprob', 'logistic_verifier_score', 'mean_logprob', 'oracle_correctness_verifier', 'response_length_negative', 'total_logprob']
+- Features from raw response caches: total_logprob, length_penalized_logprob, response_length, answer_format.
+- Learned verifier scores: logistic regression, gradient boosting, calibrated variants.
+- oracle_correctness_verifier is included as a DIAGNOSTIC UPPER BOUND only.
+- Leakage status tracked per score function (none / train_test_split / oracle).
+- Expanded raw-feature comparison is restricted to models with extracted response features.
+- The structured judge-score artifact is a heuristic diagnostic and is not used for paper-facing model-judge claims.
+
+5. Verifier extension (diagnostic — oracle and synthetic only)
 - Verifier scores tested: ['oracle_correctness_verifier_M1', 'synthetic_noisy_verifier_M1', 'synthetic_noisy_verifier_M2', 'synthetic_noisy_verifier_M4', 'synthetic_noisy_verifier_M8']
 - MAE: 0.0000000000
-- Accuracy gains: oracle and synthetic verifier scores improve selection by changing score separation; they are diagnostics, not learned verifiers.
-- Multi-verifier scaling if available: synthetic M in {1,2,4,8} is included.
+- These are diagnostic results using ground-truth labels. They represent upper bounds on what a learned verifier could achieve.
+- Synthetic noisy verifiers (M in {1,2,4,8}) demonstrate theorem validity for noisy scores.
 
 6. Posterior monotonicity
-- Is rho(s) monotone? 0/23 models pass the bin monotonicity check.
-- Does calibrated score improve selection? Mean N=48 top-score=0.654608, calibrated=0.663915.
+- Is P(correct|score) monotone? 0/23 models pass the bin monotonicity check.
+- Calibrated score improves selection: N=48 top-score=0.654608, calibrated=0.664026.
 
-7. Main paper-ready claims
-- Claim 1: Best-of-N top-score selection obeys an exact per-problem order-statistic law.
-- Claim 2: AUC/kappa is the complete N=2 story, while high-N behavior is governed by higher moments and tails.
-- Claim 3: The same law applies to likelihood, calibrated posterior, oracle/rule-based verifier, and synthetic multi-verifier scores.
+6b. Real learned verifier extension
+- Classifiers trained on raw-cache features (logprob, length, format, reasoning indicators).
+- Split by problem_idx (no response-level leakage).
+- Per-model results:
+  - logistic: AUC=0.8332, N=48 acc=0.5635
+  - gbdt: AUC=0.8505, N=48 acc=0.5823
+  - calibrated_logistic: AUC=0.8335, N=48 acc=0.5655
+  - calibrated_gbdt: AUC=0.8517, N=48 acc=0.5794
+- These are real learned verifiers, not oracle or synthetic scores.
 
-8. Claims to avoid
-- Avoid claiming global optimality.
-- Avoid claiming AUC predicts all N.
-- Avoid claiming tiny pilots are exact unless supported.
+7. Paper-ready claims
+- Claim 1: Best-of-N top-score selection obeys an exact per-problem order-statistic law, validated across 23 models.
+- Claim 2: AUC/kappa is exact for N=2 only. High-N behavior requires the full moment hierarchy.
+- Claim 3: The same law applies to any score function, including likelihood, calibrated posterior, and learned verifiers.
+- Claim 4 (if real verifiers tested): Learned feature-based verifiers trained on response features provide real, non-oracle reranking that the theorem predicts.
+
+8. Caveats and claims to avoid
+- No claim of global optimality of any score function.
+- No claim that AUC predicts all N (it does not; high-N requires higher moments).
+- No claim that tiny pilots (K<16) are sufficient for accurate forecasting.
+- Oracle and synthetic verifier results are diagnostic upper bounds only, not achievable in practice without ground-truth labels.
+- The 48-sample-per-problem regime limits pilot forecasting to K<40.
+- Learned verifiers use problem-level train/test splits; cross-domain generalization is not claimed.
