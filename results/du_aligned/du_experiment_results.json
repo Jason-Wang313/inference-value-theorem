@@ -1,0 +1,266 @@
+{
+  "audit": {
+    "found": true,
+    "overall_mae": 0.0006223688355332208,
+    "n_triples": 35964,
+    "tie_rate": 0.00013413506012950968,
+    "per_problem_mae": 0.0006015819643820549,
+    "pooled_mae": 0.12236377157597667,
+    "heldout_mae_k24": 0.16039386350009086,
+    "n2_auc_diff": 1.0880105535741109e-16
+  },
+  "moment_hierarchy": {
+    "baseline": "Held-out ridge regression using p, kappa, N, log(N), and simple interactions; N=2 uses the exact AUC identity.",
+    "heldout_split": "problem_idx % 5 == 0",
+    "by_n": {
+      "2": {
+        "auc_only_mae": 4.8051647964881727e-17,
+        "auc_only_mae_ci95": [
+          4.432972133850397e-17,
+          5.1905181349425163e-17
+        ],
+        "moment_mae": 7.048131479778051e-18,
+        "moment_mae_ci95": [
+          5.980949598603406e-18,
+          8.204472762666982e-18
+        ]
+      },
+      "3": {
+        "auc_only_mae": 0.015815973955994204,
+        "auc_only_mae_ci95": [
+          0.014623182599368609,
+          0.01690636973017534
+        ],
+        "moment_mae": 4.944923504913045e-18,
+        "moment_mae_ci95": [
+          4.015019408345078e-18,
+          5.877904716294273e-18
+        ]
+      },
+      "4": {
+        "auc_only_mae": 0.0194917450862815,
+        "auc_only_mae_ci95": [
+          0.017950810700882523,
+          0.02083965988012543
+        ],
+        "moment_mae": 7.427482275115815e-18,
+        "moment_mae_ci95": [
+          6.503060464015488e-18,
+          8.45974393359188e-18
+        ]
+      },
+      "8": {
+        "auc_only_mae": 0.0320170726128827,
+        "auc_only_mae_ci95": [
+          0.029676521099043382,
+          0.034321019150851166
+        ],
+        "moment_mae": 6.56844489254934e-18,
+        "moment_mae_ci95": [
+          5.5010770021761926e-18,
+          7.62713075446728e-18
+        ]
+      },
+      "16": {
+        "auc_only_mae": 0.047627702997769236,
+        "auc_only_mae_ci95": [
+          0.04474509194804918,
+          0.0509351953673013
+        ],
+        "moment_mae": 7.44110972799246e-18,
+        "moment_mae_ci95": [
+          6.430433831754726e-18,
+          8.42426758369877e-18
+        ]
+      },
+      "32": {
+        "auc_only_mae": 0.06814634513981173,
+        "auc_only_mae_ci95": [
+          0.06322485164619678,
+          0.0724029481984387
+        ],
+        "moment_mae": 6.678276798575822e-18,
+        "moment_mae_ci95": [
+          5.591385200231764e-18,
+          7.756603860855988e-18
+        ]
+      },
+      "48": {
+        "auc_only_mae": 0.08209840370442219,
+        "auc_only_mae_ci95": [
+          0.07645548358119728,
+          0.08763683942483892
+        ],
+        "moment_mae": 4.0791245581569534e-18,
+        "moment_mae_ci95": [
+          3.2902437754587877e-18,
+          4.8618204636267706e-18
+        ]
+      }
+    },
+    "num_rows_test": 15785
+  },
+  "pilot_sample_complexity": {
+    "K_values_tested": [
+      8,
+      16,
+      24,
+      32
+    ],
+    "N_values_tested": [
+      2,
+      8,
+      16,
+      32
+    ],
+    "threshold_first_K": {
+      "0.05": 16,
+      "0.02": null,
+      "0.01": null
+    },
+    "overall": [
+      {
+        "K": 8,
+        "N": 2,
+        "heldout_MAE_mean": 0.05016083475486635,
+        "models": 23
+      },
+      {
+        "K": 16,
+        "N": 2,
+        "heldout_MAE_mean": 0.04104309989244793,
+        "models": 22
+      },
+      {
+        "K": 24,
+        "N": 2,
+        "heldout_MAE_mean": 0.03870110273220819,
+        "models": 22
+      },
+      {
+        "K": 32,
+        "N": 2,
+        "heldout_MAE_mean": 0.04071577538307799,
+        "models": 22
+      },
+      {
+        "K": 8,
+        "N": 8,
+        "heldout_MAE_mean": 0.07471506648585927,
+        "models": 23
+      },
+      {
+        "K": 16,
+        "N": 8,
+        "heldout_MAE_mean": 0.06324028127944031,
+        "models": 22
+      },
+      {
+        "K": 24,
+        "N": 8,
+        "heldout_MAE_mean": 0.059888138700800016,
+        "models": 22
+      },
+      {
+        "K": 32,
+        "N": 8,
+        "heldout_MAE_mean": 0.06313379441692892,
+        "models": 22
+      },
+      {
+        "K": 8,
+        "N": 16,
+        "heldout_MAE_mean": 0.09234669580628449,
+        "models": 22
+      },
+      {
+        "K": 16,
+        "N": 16,
+        "heldout_MAE_mean": 0.0793462121300916,
+        "models": 22
+      },
+      {
+        "K": 24,
+        "N": 16,
+        "heldout_MAE_mean": 0.07534670070623502,
+        "models": 22
+      },
+      {
+        "K": 32,
+        "N": 16,
+        "heldout_MAE_mean": 0.07910351272603242,
+        "models": 22
+      },
+      {
+        "K": 8,
+        "N": 32,
+        "heldout_MAE_mean": 0.10043932166549144,
+        "models": 22
+      },
+      {
+        "K": 16,
+        "N": 32,
+        "heldout_MAE_mean": 0.09312636296171224,
+        "models": 22
+      }
+    ]
+  },
+  "score_function_comparison": {
+    "evaluated_on": "held-out problems (problem_idx % 5 == 0)",
+    "score_functions": [
+      "anti_meanlogprob",
+      "calibrated_binned_posterior",
+      "mean_logprob",
+      "oracle_correctness_verifier"
+    ],
+    "best_score_at_N48": {
+      "score_name": "oracle_correctness_verifier",
+      "actual_acc": 0.8386267725667614
+    },
+    "missing_dependencies": [
+      "No external reward/verifier/model-judge scores were present in the measurement artifacts.",
+      "Total logprob, response length, boxed-answer format, and final-answer logprob require parsing raw response caches; the compact measurement artifacts only contain mean logprob and correctness."
+    ]
+  },
+  "verifier_extension": {
+    "external_verifier_scores_found": false,
+    "verifier_scores_tested": [
+      "oracle_correctness_verifier_M1",
+      "synthetic_noisy_verifier_M1",
+      "synthetic_noisy_verifier_M2",
+      "synthetic_noisy_verifier_M4",
+      "synthetic_noisy_verifier_M8"
+    ],
+    "labeling_note": "Oracle and synthetic verifier scores use correctness labels to construct diagnostic scores; they are not realistic learned verifiers.",
+    "mean_mae": 0.0
+  },
+  "posterior_monotonicity": {
+    "monotone_models": 0,
+    "total_models": 23,
+    "mean_violations": 6.260869565217392,
+    "mean_top_score_acc_N48": 0.654608120042948,
+    "mean_calibrated_score_acc_N48": 0.6639150899809028
+  },
+  "generated_tables": [
+    "tables\\moment_hierarchy_vs_auc.csv",
+    "tables\\pilot_sample_complexity.csv",
+    "tables\\posterior_monotonicity.csv",
+    "tables\\score_function_comparison.csv",
+    "tables\\verifier_extension.csv"
+  ],
+  "generated_figures": [
+    "figures\\auc_fails_highN_moments_succeed.pdf",
+    "figures\\moment_hierarchy_vs_auc.pdf",
+    "figures\\pilot_sample_complexity.pdf",
+    "figures\\posterior_monotonicity_diagnostic.pdf",
+    "figures\\score_function_comparison.pdf",
+    "figures\\verifier_extension_bestofN.pdf"
+  ],
+  "row_counts": {
+    "moment_hierarchy_test_rows": 15785,
+    "pilot_rows": 310,
+    "score_rows": 644,
+    "verifier_rows": 805,
+    "posterior_rows": 23
+  }
+}

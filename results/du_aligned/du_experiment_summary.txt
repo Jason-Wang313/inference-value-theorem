@@ -1,0 +1,45 @@
+DU-ALIGNED THEOREM 1 EXPERIMENT SUMMARY
+
+1. Existing theorem audit
+- Overall MAE: 0.000622
+- Models: 23
+- Problems: up to 500 measured per model
+- N values: [1, 2, 4, 8, 16, 32, 48]
+- Tie rate: 0.000134
+- Per-problem vs pooled MAE: 0.000602 vs 0.122364
+
+2. Moment hierarchy
+- AUC-only MAE by N: N=2: 0.000000, N=3: 0.015816, N=4: 0.019492, N=8: 0.032017, N=16: 0.047628, N=32: 0.068146, N=48: 0.082098
+- Moment-predictor MAE by N: N=2: 0.0000000000, N=3: 0.0000000000, N=4: 0.0000000000, N=8: 0.0000000000, N=16: 0.0000000000, N=32: 0.0000000000, N=48: 0.0000000000
+- Main conclusion: kappa exactly controls N=2, but high-N scaling requires the higher rank-interval moments. The moment predictor is exact up to floating-point error.
+
+3. Pilot sample complexity
+- K values tested: [8, 16, 24, 32]
+- Held-out MAE trend for N=8: K=8: 0.075, K=16: 0.063, K=24: 0.060, K=32: 0.063
+- Samples needed for MAE < 0.05 / 0.02 / 0.01 if achieved: {'0.05': 16, '0.02': None, '0.01': None}
+
+4. Score-function comparison
+- Best score function at N=48: oracle_correctness_verifier (0.838627)
+- Does theorem predict each score function? Yes, with exact empirical MAE near zero for every tested score.
+- Any score better than mean logprob? The calibrated posterior and oracle/rule-based scores are reported in the table; oracle is labeled as such.
+- Missing score dependencies: total logprob and format/verifier features are not present in the compact measurement JSONs.
+
+5. Verifier extension
+- Verifier scores tested: ['oracle_correctness_verifier_M1', 'synthetic_noisy_verifier_M1', 'synthetic_noisy_verifier_M2', 'synthetic_noisy_verifier_M4', 'synthetic_noisy_verifier_M8']
+- MAE: 0.0000000000
+- Accuracy gains: oracle and synthetic verifier scores improve selection by changing score separation; they are diagnostics, not learned verifiers.
+- Multi-verifier scaling if available: synthetic M in {1,2,4,8} is included.
+
+6. Posterior monotonicity
+- Is rho(s) monotone? 0/23 models pass the bin monotonicity check.
+- Does calibrated score improve selection? Mean N=48 top-score=0.654608, calibrated=0.663915.
+
+7. Main paper-ready claims
+- Claim 1: Best-of-N top-score selection obeys an exact per-problem order-statistic law.
+- Claim 2: AUC/kappa is the complete N=2 story, while high-N behavior is governed by higher moments and tails.
+- Claim 3: The same law applies to likelihood, calibrated posterior, oracle/rule-based verifier, and synthetic multi-verifier scores.
+
+8. Claims to avoid
+- Avoid claiming global optimality.
+- Avoid claiming AUC predicts all N.
+- Avoid claiming tiny pilots are exact unless supported.

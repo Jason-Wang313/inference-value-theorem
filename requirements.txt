@@ -1,0 +1,9 @@
+openai
+numpy
+scipy
+matplotlib
+pandas
+tqdm
+scikit-learn
+sympy
+datasets

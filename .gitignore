@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Raw model responses and local caches can be very large and may contain
+# provider metadata. The committed measurement artifacts are compact.
+data/raw/
+data/math500_raw/
+logs/
+collection*.log
+
+# Local editor and OS files.
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
