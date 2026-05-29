@@ -1,0 +1,1 @@
+{"benchmark": "ifeval", "task_id": "1019", "sample_idx": 33, "model_name": "stockmark/stockmark-2-100b-instruct", "content": "hello world", "logprobs": [{"token": "hello", "logprob": -8.4005765914917}, {"token": " world", "logprob": -2.3328781127929688}, {"token": "<|end|>", "logprob": -1.5137262344360352}]}

@@ -1,0 +1,30 @@
+{
+  "status": "completed",
+  "source_path": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\model_judge\\judged_responses_live.jsonl",
+  "manifest_path": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\model_judge\\judge_subset_manifest_live.json",
+  "score_name": "live_llm_judge_score",
+  "manifest_n_problems": 45,
+  "manifest_samples_per_problem": 48,
+  "manifest_expected_model_problem_pairs": 135,
+  "num_model_problem_pairs": 135,
+  "models": [
+    "3B",
+    "70B",
+    "8B"
+  ],
+  "N_values": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    48
+  ],
+  "mean_live_judge_auc": 0.7031844015116667,
+  "mean_logprob_auc_on_same_pairs": 0.5354580125345308,
+  "mean_mae": 0.0,
+  "n48_live_judge_acc": 0.5607869656247887,
+  "n48_mean_logprob_acc_same_pairs": 0.49634689667385673,
+  "n48_improvement_over_meanlogprob": 0.06444006895093203
+}

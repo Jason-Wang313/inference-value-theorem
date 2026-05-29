@@ -1,0 +1,46 @@
+{
+  "benchmark": "livecodebench",
+  "models": [
+    "3B",
+    "8B",
+    "Super49B",
+    "70B",
+    "Maverick17B",
+    "Qwen122B",
+    "Qwen397B",
+    "QwenNext80B",
+    "Gemma3n2B",
+    "Gemma3n4B",
+    "MistralSmall119B",
+    "Mixtral8x7B",
+    "Ministral14B",
+    "Super120B",
+    "Dracarys70B",
+    "Stockmark100B"
+  ],
+  "expected_records": 320,
+  "measurement_records": 320,
+  "nondegenerate_records": 262,
+  "grading_coverage_records": 320,
+  "grading_coverage_rate": 1.0,
+  "N_values": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    48
+  ],
+  "mean_exact_law_mae": 0.0,
+  "mean_p": 0.48359375,
+  "best_of_n_curve": {
+    "1": 0.48359375,
+    "2": 0.5061903211805555,
+    "4": 0.5186235533820258,
+    "8": 0.5242918098648491,
+    "16": 0.5271960672882334,
+    "32": 0.526777262648509,
+    "48": 0.5245820995985587
+  }
+}

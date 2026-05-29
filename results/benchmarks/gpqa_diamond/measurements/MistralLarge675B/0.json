@@ -1,0 +1,25 @@
+{
+  "benchmark": "gpqa_diamond",
+  "task_id": "0",
+  "model_key": "MistralLarge675B",
+  "model_name": "mistralai/mistral-large-3-675b-instruct-2512",
+  "grader_type": "multiple_choice_letter",
+  "code_test_scope": null,
+  "p": 1.0,
+  "kappa": null,
+  "n_correct": 1,
+  "n_incorrect": 0,
+  "scores_correct": [
+    -0.15403889859129885
+  ],
+  "scores_incorrect": [],
+  "all_scores": [
+    -0.15403889859129885
+  ],
+  "all_correct": [
+    true
+  ],
+  "metadata": {
+    "source": "dongboklee/GPQA-diamond"
+  }
+}

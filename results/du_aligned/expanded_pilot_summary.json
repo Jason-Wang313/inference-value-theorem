@@ -1,0 +1,67 @@
+{
+  "models": [
+    "3B",
+    "70B",
+    "Super49B",
+    "Super120B",
+    "MistralSmall119B"
+  ],
+  "n_problems": 100,
+  "K_values_tested": [
+    8,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96,
+    128,
+    192
+  ],
+  "N_values_tested": [
+    2,
+    8,
+    16,
+    32,
+    48,
+    64,
+    96,
+    128
+  ],
+  "n_seeds": 20,
+  "data_source": "measurement_artifacts_max_256_samples",
+  "max_samples_per_problem": 256,
+  "per_model_sample_coverage": {
+    "3B": {
+      "num_records": 100,
+      "max_samples": 256,
+      "min_samples": 256,
+      "records_at_max": 100
+    },
+    "70B": {
+      "num_records": 100,
+      "max_samples": 256,
+      "min_samples": 256,
+      "records_at_max": 100
+    },
+    "MistralSmall119B": {
+      "num_records": 100,
+      "max_samples": 256,
+      "min_samples": 256,
+      "records_at_max": 100
+    },
+    "Super120B": {
+      "num_records": 100,
+      "max_samples": 256,
+      "min_samples": 256,
+      "records_at_max": 100
+    },
+    "Super49B": {
+      "num_records": 100,
+      "max_samples": 256,
+      "min_samples": 256,
+      "records_at_max": 100
+    }
+  },
+  "expanded_measurements_dir": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\expanded_measurements"
+}

@@ -7,6 +7,7 @@ import time
 import json
 import hashlib
 import threading
+import os
 from pathlib import Path
 from openai import OpenAI
 from queue import Queue, Empty
@@ -15,7 +16,26 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import NIM_API_KEYS, NIM_BASE_URL, RATE_LIMIT_PER_KEY, N_SAMPLES
 
-CACHE_DIR = Path(__file__).parent.parent / "data" / "raw"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _resolve_cache_dir() -> Path:
+    explicit = os.environ.get("INFERENCE_VALUE_RAW_DIR") or os.environ.get("NIM_CACHE_DIR")
+    if explicit:
+        return Path(explicit)
+
+    local = PROJECT_ROOT / "data" / "raw"
+    sibling = PROJECT_ROOT.parent / "inference-value-theorem" / "data" / "raw"
+    try:
+        local_has_cache = any(local.glob("*.json"))
+    except OSError:
+        local_has_cache = False
+    if not local_has_cache and sibling.exists():
+        return sibling
+    return local
+
+
+CACHE_DIR = _resolve_cache_dir()
 
 
 def _cache_path(model, problem, sample_idx):

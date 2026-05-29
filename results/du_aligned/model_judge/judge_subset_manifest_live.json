@@ -1,0 +1,73 @@
+{
+  "target_models": [
+    "3B",
+    "8B",
+    "70B"
+  ],
+  "n_problems": 45,
+  "problem_indices": [
+    0,
+    5,
+    10,
+    20,
+    45,
+    50,
+    60,
+    70,
+    80,
+    90,
+    105,
+    120,
+    140,
+    155,
+    180,
+    185,
+    195,
+    205,
+    220,
+    225,
+    230,
+    255,
+    270,
+    290,
+    295,
+    310,
+    315,
+    320,
+    340,
+    345,
+    355,
+    370,
+    385,
+    390,
+    415,
+    420,
+    430,
+    435,
+    440,
+    445,
+    460,
+    470,
+    475,
+    480,
+    495
+  ],
+  "difficulty_bins": {
+    "hard": 52,
+    "medium": 54,
+    "easy": 62
+  },
+  "selected_per_bin": {
+    "hard": 26,
+    "medium": 29,
+    "easy": 31
+  },
+  "total_judgments": 6480,
+  "judge_kind": "live_nim",
+  "judge_model": "meta/llama-3.3-70b-instruct",
+  "judge_modes": [
+    "live_no_reference"
+  ],
+  "samples_per_problem": 48,
+  "total_judgments_with_modes": 6480
+}

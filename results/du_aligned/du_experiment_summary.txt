@@ -22,12 +22,14 @@ DU-ALIGNED THEOREM 1 EXPERIMENT SUMMARY
 - CAVEAT: With only 48 samples/problem, pilot K is capped at ~40. Finite-pilot forecasting is sample-complexity limited.
 
 3b. Expanded pilot sample-complexity
-- Models: ['3B', '8B', '70B', 'Qwen397B', 'Mixtral8x22B']
+- Models: ['3B', '70B', 'Super49B', 'Super120B', 'MistralSmall119B']
 - Problems: 100 stratified problems
-- K values: [8, 16, 24, 32]
-- Data source: existing_48_samples
-- Note: With 48 samples/problem, maximum pilot K is ~40 (remaining held out for evaluation).
-- Larger K values (64, 96, 128) require additional sample collection beyond the current 48.
+- K values: [8, 16, 24, 32, 48, 64, 96, 128, 192]
+- N values: [2, 8, 16, 32, 48, 64, 96, 128]
+- Data source: measurement_artifacts_max_256_samples
+- Coverage: all five models have 100/100 records at n=256.
+- N=8 held-out MAE trend: K=8: 0.093, K=16: 0.069, K=24: 0.057, K=32: 0.051, K=48: 0.043, K=64: 0.039, K=96: 0.035, K=128: 0.034, K=192: 0.039.
+- Note: The five-model curve is complete through K=192; K=128/192 is now evidenced for all five expanded-pilot models.
 
 4. Score-function comparison (baseline)
 - Best baseline score function at N=48: oracle_correctness_verifier (0.838627)
@@ -35,13 +37,15 @@ DU-ALIGNED THEOREM 1 EXPERIMENT SUMMARY
 - oracle_correctness_verifier is a DIAGNOSTIC UPPER BOUND, not a practical score function.
 
 4b. Expanded score-function comparison
-- Score functions tested on the raw-feature subset: ['answer_format_score', 'calibrated_binned_posterior', 'calibrated_gbdt_verifier_score', 'calibrated_logistic_verifier_score', 'gbdt_verifier_score', 'length_penalized_logprob', 'logistic_verifier_score', 'mean_logprob', 'oracle_correctness_verifier', 'response_length_negative', 'total_logprob']
+- Score functions tested: ['answer_format_score', 'calibrated_binned_posterior', 'calibrated_gbdt_verifier_score', 'calibrated_logistic_verifier_score', 'gbdt_verifier_score', 'length_penalized_logprob', 'live_llm_judge_score', 'logistic_verifier_score', 'mean_logprob', 'oracle_correctness_verifier', 'response_length_negative', 'total_logprob']
 - Features from raw response caches: total_logprob, length_penalized_logprob, response_length, answer_format.
 - Learned verifier scores: logistic regression, gradient boosting, calibrated variants.
+- Judge score source: live_nim_model_judge; score name: live_llm_judge_score.
+- Live LLM judge coverage: 135/135 model/problem pairs and 6480/6480 judgments for the 45-problem manifest.
+- Live LLM judge summary: exact-law MAE=0.000000, mean AUC=0.7032, mean logprob AUC on same pairs=0.5355, N=48 delta over mean logprob=0.0644.
 - oracle_correctness_verifier is included as a DIAGNOSTIC UPPER BOUND only.
 - Leakage status tracked per score function (none / train_test_split / oracle).
-- Expanded raw-feature comparison is restricted to models with extracted response features.
-- The structured judge-score artifact is a heuristic diagnostic and is not used for paper-facing model-judge claims.
+- Heuristic judge artifacts remain diagnostic only; live judge scores may be used for paper-facing score-agnostic claims when present.
 
 5. Verifier extension (diagnostic — oracle and synthetic only)
 - Verifier scores tested: ['oracle_correctness_verifier_M1', 'synthetic_noisy_verifier_M1', 'synthetic_noisy_verifier_M2', 'synthetic_noisy_verifier_M4', 'synthetic_noisy_verifier_M8']
@@ -63,16 +67,26 @@ DU-ALIGNED THEOREM 1 EXPERIMENT SUMMARY
   - calibrated_gbdt: AUC=0.8517, N=48 acc=0.5794
 - These are real learned verifiers, not oracle or synthetic scores.
 
+
+6d. Adaptive compute allocation
+- Policies compared under identical fixed budgets: ['auc_kappa_based', 'moment_law', 'oracle', 'p_based', 'uniform']
+- Models: ['3B', '70B', 'MistralSmall119B', 'Super120B', 'Super49B']
+- Reference-budget ranking: oracle: 0.6644, auc_kappa_based: 0.6359, moment_law: 0.6351, p_based: 0.6255, uniform: 0.6226
+- Moment-law improvement over uniform at reference budget: 0.0125
+- AUC/kappa-policy improvement over uniform at reference budget: 0.0133
+- Budget note: Budgets are evaluated post-pilot on held-out response pools; pilot samples estimate policy priorities.
+
 7. Paper-ready claims
 - Claim 1: Best-of-N top-score selection obeys an exact per-problem order-statistic law, validated across 23 models.
 - Claim 2: AUC/kappa is exact for N=2 only. High-N behavior requires the full moment hierarchy.
 - Claim 3: The same law applies to any score function, including likelihood, calibrated posterior, and learned verifiers.
 - Claim 4 (if real verifiers tested): Learned feature-based verifiers trained on response features provide real, non-oracle reranking that the theorem predicts.
+- Claim 5 (if allocation tested): The per-problem law supports adaptive inference-budget allocation under fixed total samples.
 
 8. Caveats and claims to avoid
 - No claim of global optimality of any score function.
 - No claim that AUC predicts all N (it does not; high-N requires higher moments).
 - No claim that tiny pilots (K<16) are sufficient for accurate forecasting.
 - Oracle and synthetic verifier results are diagnostic upper bounds only, not achievable in practice without ground-truth labels.
-- The 48-sample-per-problem regime limits pilot forecasting to K<40.
+- The main 48-sample-per-problem regime limits pilot forecasting to K<40; the expanded pilot now reaches 256 samples/problem on five models, enabling K<=192 curves.
 - Learned verifiers use problem-level train/test splits; cross-domain generalization is not claimed.

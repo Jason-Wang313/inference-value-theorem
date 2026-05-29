@@ -249,119 +249,206 @@
       "calibrated_logistic",
       "calibrated_gbdt"
     ],
+    "models_with_features": [
+      "3B",
+      "70B",
+      "8B",
+      "Mixtral8x22B",
+      "Qwen397B"
+    ],
     "per_classifier_metrics": {
       "logistic": {
         "3B": {
           "auc": 0.7894040279706416,
-          "brier": 0.1803920542990296,
-          "ece": 0.0509103267323342
+          "brier": 0.18039205429902966,
+          "ece": 0.050910326732334275,
+          "n_train": 19191,
+          "n_test": 4795,
+          "train_pos_rate": 0.3793444843937262,
+          "test_pos_rate": 0.3645464025026069
         },
         "70B": {
           "auc": 0.8079021079215528,
-          "brier": 0.1599901837578721,
-          "ece": 0.0272349157898073
+          "brier": 0.15999018375787216,
+          "ece": 0.027234915789807305,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.6780729166666667,
+          "test_pos_rate": 0.6716666666666666
         },
         "8B": {
           "auc": 0.8409596880710738,
-          "brier": 0.1612406566882895,
-          "ece": 0.0453642624960082
+          "brier": 0.16124065668828952,
+          "ece": 0.0453642624960082,
+          "n_train": 19199,
+          "n_test": 4800,
+          "train_pos_rate": 0.4070524506484713,
+          "test_pos_rate": 0.3960416666666667
         },
         "Mixtral8x22B": {
           "auc": 0.8169617203847304,
-          "brier": 0.1742064614438027,
-          "ece": 0.0385666548730211
+          "brier": 0.17420646144380275,
+          "ece": 0.038566654873021126,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.4496354166666667,
+          "test_pos_rate": 0.44375
         },
         "Qwen397B": {
           "auc": 0.9108040780768054,
-          "brier": 0.048880849151201,
-          "ece": 0.0443715940203116
+          "brier": 0.04888084915120102,
+          "ece": 0.04437159402031167,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.7563541666666667,
+          "test_pos_rate": 0.75625
         }
       },
       "gbdt": {
         "3B": {
           "auc": 0.802911612051919,
           "brier": 0.1768076024166557,
-          "ece": 0.0583165907962399
+          "ece": 0.0583165907962399,
+          "n_train": 19191,
+          "n_test": 4795,
+          "train_pos_rate": 0.3793444843937262,
+          "test_pos_rate": 0.3645464025026069
         },
         "70B": {
           "auc": 0.8202700872894912,
           "brier": 0.1553239327304392,
-          "ece": 0.0409738001911376
+          "ece": 0.04097380019113761,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.6780729166666667,
+          "test_pos_rate": 0.6716666666666666
         },
         "8B": {
           "auc": 0.855433016772458,
           "brier": 0.1535976385223078,
-          "ece": 0.0378512358410183
+          "ece": 0.037851235841018314,
+          "n_train": 19199,
+          "n_test": 4800,
+          "train_pos_rate": 0.4070524506484713,
+          "test_pos_rate": 0.3960416666666667
         },
         "Mixtral8x22B": {
           "auc": 0.8285383587417137,
-          "brier": 0.1700230456239206,
-          "ece": 0.0483797457689794
+          "brier": 0.17002304562392065,
+          "ece": 0.04837974576897945,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.4496354166666667,
+          "test_pos_rate": 0.44375
         },
         "Qwen397B": {
-          "auc": 0.9452845471027288,
-          "brier": 0.0491437481475682,
-          "ece": 0.0317646681238902
+          "auc": 0.9452845471027289,
+          "brier": 0.04914374814756828,
+          "ece": 0.031764668123890234,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.7563541666666667,
+          "test_pos_rate": 0.75625
         }
       },
       "calibrated_logistic": {
         "3B": {
           "auc": 0.7892836785103553,
-          "brier": 0.1809014176573189,
-          "ece": 0.0572773781393651
+          "brier": 0.18090141765731899,
+          "ece": 0.0572773781393651,
+          "n_train": 19191,
+          "n_test": 4795,
+          "train_pos_rate": 0.3793444843937262,
+          "test_pos_rate": 0.3645464025026069
         },
         "70B": {
           "auc": 0.80770352590344,
           "brier": 0.1595412018752294,
-          "ece": 0.0297660824470633
+          "ece": 0.02976608244706335,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.6780729166666667,
+          "test_pos_rate": 0.6716666666666666
         },
         "8B": {
           "auc": 0.8410486918977848,
           "brier": 0.1598852268263837,
-          "ece": 0.0357225745564211
+          "ece": 0.03572257455642118,
+          "n_train": 19199,
+          "n_test": 4800,
+          "train_pos_rate": 0.4070524506484713,
+          "test_pos_rate": 0.3960416666666667
         },
         "Mixtral8x22B": {
           "auc": 0.8171841536108033,
-          "brier": 0.1738337712533589,
-          "ece": 0.0359401210544474
+          "brier": 0.17383377125335894,
+          "ece": 0.03594012105444742,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.4496354166666667,
+          "test_pos_rate": 0.44375
         },
         "Qwen397B": {
-          "auc": 0.9123042782133692,
-          "brier": 0.0480399774140612,
-          "ece": 0.0426267922475676
+          "auc": 0.9123042782133691,
+          "brier": 0.04803997741406124,
+          "ece": 0.04262679224756764,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.7563541666666667,
+          "test_pos_rate": 0.75625
         }
       },
       "calibrated_gbdt": {
         "3B": {
           "auc": 0.8041090985693998,
-          "brier": 0.175605842929624,
-          "ece": 0.0526793125601272
+          "brier": 0.17560584292962408,
+          "ece": 0.05267931256012721,
+          "n_train": 19191,
+          "n_test": 4795,
+          "train_pos_rate": 0.3793444843937262,
+          "test_pos_rate": 0.3645464025026069
         },
         "70B": {
           "auc": 0.8182673413863032,
-          "brier": 0.156479475526041,
-          "ece": 0.0462674583976414
+          "brier": 0.15647947552604108,
+          "ece": 0.04626745839764143,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.6780729166666667,
+          "test_pos_rate": 0.6716666666666666
         },
         "8B": {
           "auc": 0.8560566786529993,
           "brier": 0.1528284800683002,
-          "ece": 0.0357959788018815
+          "ece": 0.03579597880188157,
+          "n_train": 19199,
+          "n_test": 4800,
+          "train_pos_rate": 0.4070524506484713,
+          "test_pos_rate": 0.3960416666666667
         },
         "Mixtral8x22B": {
           "auc": 0.8289579926500326,
-          "brier": 0.1695601363918737,
-          "ece": 0.0438809565823557
+          "brier": 0.16956013639187376,
+          "ece": 0.04388095658235571,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.4496354166666667,
+          "test_pos_rate": 0.44375
         },
         "Qwen397B": {
           "auc": 0.9509319300228392,
-          "brier": 0.0468737706593625,
-          "ece": 0.0595430875016396
+          "brier": 0.046873770659362594,
+          "ece": 0.05954308750163964,
+          "n_train": 19200,
+          "n_test": 4800,
+          "train_pos_rate": 0.7563541666666667,
+          "test_pos_rate": 0.75625
         }
       }
     },
     "mean_auc_by_type": {
       "logistic": 0.8332063244849607,
-      "gbdt": 0.8504875243916621,
+      "gbdt": 0.8504875243916622,
       "calibrated_logistic": 0.8335048656271505,
       "calibrated_gbdt": 0.8516646082563147
     },
@@ -370,14 +457,7 @@
       "gbdt_verifier": 0.5823334285585277,
       "calibrated_logistic_verifier": 0.5654592239846601,
       "calibrated_gbdt_verifier": 0.5793598423072306
-    },
-    "models_with_features": [
-      "3B",
-      "70B",
-      "8B",
-      "Mixtral8x22B",
-      "Qwen397B"
-    ]
+    }
   },
   "expanded_score_comparison": {
     "score_functions": [
@@ -387,6 +467,7 @@
       "calibrated_logistic_verifier_score",
       "gbdt_verifier_score",
       "length_penalized_logprob",
+      "live_llm_judge_score",
       "logistic_verifier_score",
       "mean_logprob",
       "oracle_correctness_verifier",
@@ -395,89 +476,223 @@
     ],
     "features_available": true,
     "judge_scores_available": true,
-    "judge_scores_used": false,
-    "judge_scores_source": "deterministic_fallback_heuristic_not_live_model_judge",
+    "judge_scores_used": true,
+    "judge_scores_source": "live_nim_model_judge",
+    "judge_score_name": "live_llm_judge_score",
     "comparison_models": [
-      "3B",
-      "70B",
-      "8B",
-      "Mixtral8x22B",
-      "Qwen397B"
+      "3B"
     ],
     "verifier_scores_available": true,
     "n48_ranking": [
       {
         "score_name": "oracle_correctness_verifier",
-        "actual_acc": 0.8200015729475394
-      },
-      {
-        "score_name": "gbdt_verifier_score",
-        "actual_acc": 0.5839331346894301
+        "actual_acc": 0.9999999998075606
       },
       {
         "score_name": "calibrated_gbdt_verifier_score",
-        "actual_acc": 0.5808748989984395
+        "actual_acc": 0.722582242143221
       },
       {
-        "score_name": "calibrated_logistic_verifier_score",
-        "actual_acc": 0.5650452831142891
-      },
-      {
-        "score_name": "logistic_verifier_score",
-        "actual_acc": 0.5630593354917033
-      },
-      {
-        "score_name": "answer_format_score",
-        "actual_acc": 0.5596974615947239
-      },
-      {
-        "score_name": "total_logprob",
-        "actual_acc": 0.5490970879491011
-      },
-      {
-        "score_name": "calibrated_binned_posterior",
-        "actual_acc": 0.5462102585889922
+        "score_name": "gbdt_verifier_score",
+        "actual_acc": 0.7218132831838171
       },
       {
         "score_name": "mean_logprob",
-        "actual_acc": 0.5453756768456776
+        "actual_acc": 0.5811005374620839
+      },
+      {
+        "score_name": "answer_format_score",
+        "actual_acc": 0.5578498904617458
+      },
+      {
+        "score_name": "live_llm_judge_score",
+        "actual_acc": 0.55
+      },
+      {
+        "score_name": "calibrated_binned_posterior",
+        "actual_acc": 0.4989409471087556
+      },
+      {
+        "score_name": "logistic_verifier_score",
+        "actual_acc": 0.4484093408135469
       },
       {
         "score_name": "length_penalized_logprob",
-        "actual_acc": 0.531820304071779
+        "actual_acc": 0.34896380715943087
+      },
+      {
+        "score_name": "calibrated_logistic_verifier_score",
+        "actual_acc": 0.34697426061050646
+      },
+      {
+        "score_name": "total_logprob",
+        "actual_acc": 0.2815890724023404
       },
       {
         "score_name": "response_length_negative",
-        "actual_acc": 0.5273924472302459
+        "actual_acc": 0.25660324393888884
       }
     ]
   },
   "expanded_pilot": {
     "models": [
       "3B",
-      "8B",
       "70B",
-      "Qwen397B",
-      "Mixtral8x22B"
+      "Super49B",
+      "Super120B",
+      "MistralSmall119B"
     ],
     "n_problems": 100,
     "K_values_tested": [
       8,
       16,
       24,
-      32
+      32,
+      48,
+      64,
+      96,
+      128,
+      192
     ],
     "N_values_tested": [
       2,
       8,
       16,
-      32
+      32,
+      48,
+      64,
+      96,
+      128
     ],
     "n_seeds": 20,
-    "data_source": "existing_48_samples"
+    "data_source": "measurement_artifacts_max_256_samples",
+    "max_samples_per_problem": 256,
+    "per_model_sample_coverage": {
+      "3B": {
+        "num_records": 100,
+        "max_samples": 256,
+        "min_samples": 256,
+        "records_at_max": 100
+      },
+      "70B": {
+        "num_records": 100,
+        "max_samples": 256,
+        "min_samples": 256,
+        "records_at_max": 100
+      },
+      "MistralSmall119B": {
+        "num_records": 100,
+        "max_samples": 256,
+        "min_samples": 256,
+        "records_at_max": 100
+      },
+      "Super120B": {
+        "num_records": 100,
+        "max_samples": 256,
+        "min_samples": 256,
+        "records_at_max": 100
+      },
+      "Super49B": {
+        "num_records": 100,
+        "max_samples": 256,
+        "min_samples": 256,
+        "records_at_max": 100
+      }
+    },
+    "expanded_measurements_dir": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\expanded_measurements"
+  },
+  "adaptive_allocation": {
+    "status": "completed",
+    "pilot_k": 16,
+    "seeds": 20,
+    "models": [
+      "3B",
+      "70B",
+      "MistralSmall119B",
+      "Super120B",
+      "Super49B"
+    ],
+    "mean_budgets": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "budget_note": "Budgets are evaluated post-pilot on held-out response pools; pilot samples estimate policy priorities.",
+    "policies": [
+      "auc_kappa_based",
+      "moment_law",
+      "oracle",
+      "p_based",
+      "uniform"
+    ],
+    "best_by_budget": [
+      {
+        "policy": "auc_kappa_based",
+        "mean_budget": 1,
+        "accuracy": 0.6246787828947368
+      },
+      {
+        "policy": "oracle",
+        "mean_budget": 2,
+        "accuracy": 0.6508171604485072
+      },
+      {
+        "policy": "oracle",
+        "mean_budget": 4,
+        "accuracy": 0.6604331759844506
+      },
+      {
+        "policy": "oracle",
+        "mean_budget": 8,
+        "accuracy": 0.6643341982376023
+      },
+      {
+        "policy": "oracle",
+        "mean_budget": 16,
+        "accuracy": 0.6643832059853149
+      },
+      {
+        "policy": "oracle",
+        "mean_budget": 32,
+        "accuracy": 0.6643832059853149
+      }
+    ],
+    "ranking_at_reference_budget": [
+      {
+        "policy": "oracle",
+        "mean_budget": 32,
+        "accuracy": 0.6643832059853149
+      },
+      {
+        "policy": "auc_kappa_based",
+        "mean_budget": 32,
+        "accuracy": 0.6358993627095487
+      },
+      {
+        "policy": "moment_law",
+        "mean_budget": 32,
+        "accuracy": 0.6350746462534324
+      },
+      {
+        "policy": "p_based",
+        "mean_budget": 32,
+        "accuracy": 0.6254992910989753
+      },
+      {
+        "policy": "uniform",
+        "mean_budget": 32,
+        "accuracy": 0.6226099763532753
+      }
+    ]
   },
   "generated_tables": [
+    "tables\\adaptive_allocation.csv",
+    "tables\\expanded_pilot_cache_coverage.csv",
     "tables\\expanded_pilot_sample_complexity.csv",
+    "tables\\live_judge_score_comparison.csv",
     "tables\\moment_hierarchy_vs_auc.csv",
     "tables\\pilot_sample_complexity.csv",
     "tables\\posterior_monotonicity.csv",
@@ -487,8 +702,10 @@
     "tables\\verifier_extension.csv"
   ],
   "generated_figures": [
+    "figures\\adaptive_allocation_accuracy.pdf",
     "figures\\auc_fails_highN_moments_succeed.pdf",
     "figures\\expanded_pilot_sample_complexity.pdf",
+    "figures\\live_judge_score_comparison.pdf",
     "figures\\moment_hierarchy_vs_auc.pdf",
     "figures\\pilot_sample_complexity.pdf",
     "figures\\posterior_monotonicity_diagnostic.pdf",
@@ -504,6 +721,40 @@
     "verifier_rows": 805,
     "posterior_rows": 23,
     "real_verifier_rows": 140,
-    "expanded_score_rows": 385
+    "expanded_score_rows": 84,
+    "adaptive_allocation_rows": 3000,
+    "expanded_pilot_rows": 350,
+    "expanded_pilot_cache_coverage_rows": 500,
+    "live_judge_score_rows": 945
+  },
+  "live_judge_score": {
+    "status": "completed",
+    "source_path": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\model_judge\\judged_responses_live.jsonl",
+    "manifest_path": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\model_judge\\judge_subset_manifest_live.json",
+    "score_name": "live_llm_judge_score",
+    "manifest_n_problems": 45,
+    "manifest_samples_per_problem": 48,
+    "manifest_expected_model_problem_pairs": 135,
+    "num_model_problem_pairs": 135,
+    "models": [
+      "3B",
+      "70B",
+      "8B"
+    ],
+    "N_values": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      48
+    ],
+    "mean_live_judge_auc": 0.7031844015116667,
+    "mean_logprob_auc_on_same_pairs": 0.5354580125345308,
+    "mean_mae": 0.0,
+    "n48_live_judge_acc": 0.5607869656247887,
+    "n48_mean_logprob_acc_same_pairs": 0.49634689667385673,
+    "n48_improvement_over_meanlogprob": 0.06444006895093203
   }
 }

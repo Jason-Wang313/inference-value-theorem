@@ -1,0 +1,1 @@
+{"benchmark": "ifeval", "task_id": "1108", "sample_idx": 21, "model_name": "google/gemma-3n-e2b-it", "content": " esforços.\n", "logprobs": [{"token": "▁esforços", "logprob": -3.1654348373413086}, {"token": ".", "logprob": -0.4418923854827881}, {"token": "\n", "logprob": -0.9264237880706787}, {"token": "<end_of_turn>", "logprob": -0.015599960461258888}]}

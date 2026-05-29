@@ -7,3 +7,6 @@ tqdm
 scikit-learn
 sympy
 datasets
+absl-py
+langdetect
+nltk

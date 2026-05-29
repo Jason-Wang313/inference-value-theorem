@@ -1,0 +1,188 @@
+{
+  "benchmarks": [
+    {
+      "benchmark": "gpqa_diamond",
+      "models": [
+        "3B",
+        "8B",
+        "Super49B",
+        "70B",
+        "Maverick17B",
+        "Qwen122B",
+        "Qwen397B",
+        "QwenNext80B",
+        "Gemma3n2B",
+        "Gemma3n4B",
+        "MistralSmall119B",
+        "Mixtral8x7B",
+        "Ministral14B",
+        "Super120B",
+        "Dracarys70B",
+        "Stockmark100B"
+      ],
+      "expected_records": 320,
+      "measurement_records": 320,
+      "nondegenerate_records": 251,
+      "grading_coverage_records": 320,
+      "grading_coverage_rate": 1.0,
+      "N_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        48
+      ],
+      "mean_exact_law_mae": 0.0,
+      "mean_p": 0.5393229166666667,
+      "best_of_n_curve": {
+        "1": 0.5393229166666667,
+        "2": 0.5618408203125,
+        "4": 0.5754324913024902,
+        "8": 0.5829132597116875,
+        "16": 0.5868709126512645,
+        "32": 0.5885896558333846,
+        "48": 0.5889771190427251
+      }
+    },
+    {
+      "benchmark": "ifeval",
+      "models": [
+        "3B",
+        "8B",
+        "Super49B",
+        "70B",
+        "Maverick17B",
+        "Qwen122B",
+        "Qwen397B",
+        "QwenNext80B",
+        "Gemma3n2B",
+        "Gemma3n4B",
+        "MistralSmall119B",
+        "Mixtral8x7B",
+        "Ministral14B",
+        "Super120B",
+        "Dracarys70B",
+        "Stockmark100B"
+      ],
+      "expected_records": 320,
+      "measurement_records": 320,
+      "nondegenerate_records": 164,
+      "grading_coverage_records": 320,
+      "grading_coverage_rate": 1.0,
+      "N_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        48
+      ],
+      "mean_exact_law_mae": 0.0,
+      "mean_p": 0.7770182291666666,
+      "best_of_n_curve": {
+        "1": 0.7770182291666667,
+        "2": 0.7903415256076389,
+        "4": 0.7961783485648073,
+        "8": 0.798847911569623,
+        "16": 0.7988105949861316,
+        "32": 0.7968590066554335,
+        "48": 0.7962488769455363
+      }
+    },
+    {
+      "benchmark": "livebench_selected",
+      "models": [
+        "3B",
+        "8B",
+        "Super49B",
+        "70B",
+        "Maverick17B",
+        "Qwen122B",
+        "Qwen397B",
+        "QwenNext80B",
+        "Gemma3n2B",
+        "Gemma3n4B",
+        "MistralSmall119B",
+        "Mixtral8x7B",
+        "Ministral14B",
+        "Super120B",
+        "Dracarys70B",
+        "Stockmark100B"
+      ],
+      "expected_records": 320,
+      "measurement_records": 320,
+      "nondegenerate_records": 141,
+      "grading_coverage_records": 320,
+      "grading_coverage_rate": 1.0,
+      "N_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        48
+      ],
+      "mean_exact_law_mae": 0.0,
+      "mean_p": 0.21842447916666669,
+      "best_of_n_curve": {
+        "1": 0.21842447916666666,
+        "2": 0.22706570095486112,
+        "4": 0.22955136416870872,
+        "8": 0.2310154295003307,
+        "16": 0.2367456060986762,
+        "32": 0.24734343118540608,
+        "48": 0.25458688336922464
+      }
+    },
+    {
+      "benchmark": "livecodebench",
+      "models": [
+        "3B",
+        "8B",
+        "Super49B",
+        "70B",
+        "Maverick17B",
+        "Qwen122B",
+        "Qwen397B",
+        "QwenNext80B",
+        "Gemma3n2B",
+        "Gemma3n4B",
+        "MistralSmall119B",
+        "Mixtral8x7B",
+        "Ministral14B",
+        "Super120B",
+        "Dracarys70B",
+        "Stockmark100B"
+      ],
+      "expected_records": 320,
+      "measurement_records": 320,
+      "nondegenerate_records": 262,
+      "grading_coverage_records": 320,
+      "grading_coverage_rate": 1.0,
+      "N_values": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        48
+      ],
+      "mean_exact_law_mae": 0.0,
+      "mean_p": 0.48359375,
+      "best_of_n_curve": {
+        "1": 0.48359375,
+        "2": 0.5061903211805555,
+        "4": 0.5186235533820258,
+        "8": 0.5242918098648491,
+        "16": 0.5271960672882334,
+        "32": 0.526777262648509,
+        "48": 0.5245820995985587
+      }
+    }
+  ]
+}

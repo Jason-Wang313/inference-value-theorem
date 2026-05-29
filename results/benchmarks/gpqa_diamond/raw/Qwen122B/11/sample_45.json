@@ -1,0 +1,1 @@
+{"benchmark": "gpqa_diamond", "task_id": "11", "sample_idx": 45, "model_name": "qwen/qwen3.5-122b-a10b", "content": "Final answer: A", "logprobs": [{"token": "Final", "logprob": -10.188455}, {"token": " answer", "logprob": -0.09366798}, {"token": ":", "logprob": -3.5762793e-07}, {"token": " A", "logprob": -0.22802955}, {"token": "", "logprob": -0.0014911677}]}

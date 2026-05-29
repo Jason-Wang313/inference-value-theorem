@@ -1,0 +1,87 @@
+{
+  "status": "completed",
+  "pilot_k": 16,
+  "seeds": 20,
+  "models": [
+    "3B",
+    "70B",
+    "MistralSmall119B",
+    "Super120B",
+    "Super49B"
+  ],
+  "mean_budgets": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "budget_note": "Budgets are evaluated post-pilot on held-out response pools; pilot samples estimate policy priorities.",
+  "policies": [
+    "auc_kappa_based",
+    "moment_law",
+    "oracle",
+    "p_based",
+    "uniform"
+  ],
+  "best_by_budget": [
+    {
+      "policy": "auc_kappa_based",
+      "mean_budget": 1,
+      "accuracy": 0.6246787828947368
+    },
+    {
+      "policy": "oracle",
+      "mean_budget": 2,
+      "accuracy": 0.6508171604485072
+    },
+    {
+      "policy": "oracle",
+      "mean_budget": 4,
+      "accuracy": 0.6604331759844506
+    },
+    {
+      "policy": "oracle",
+      "mean_budget": 8,
+      "accuracy": 0.6643341982376023
+    },
+    {
+      "policy": "oracle",
+      "mean_budget": 16,
+      "accuracy": 0.6643832059853149
+    },
+    {
+      "policy": "oracle",
+      "mean_budget": 32,
+      "accuracy": 0.6643832059853149
+    }
+  ],
+  "ranking_at_reference_budget": [
+    {
+      "policy": "oracle",
+      "mean_budget": 32,
+      "accuracy": 0.6643832059853149
+    },
+    {
+      "policy": "auc_kappa_based",
+      "mean_budget": 32,
+      "accuracy": 0.6358993627095487
+    },
+    {
+      "policy": "moment_law",
+      "mean_budget": 32,
+      "accuracy": 0.6350746462534324
+    },
+    {
+      "policy": "p_based",
+      "mean_budget": 32,
+      "accuracy": 0.6254992910989753
+    },
+    {
+      "policy": "uniform",
+      "mean_budget": 32,
+      "accuracy": 0.6226099763532753
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"benchmark": "gpqa_diamond", "task_id": "19", "sample_idx": 3, "model_name": "meta/llama-3.2-3b-instruct", "content": "Final answer: C", "logprobs": [{"token": "Final", "logprob": -0.0685490295290947}, {"token": " answer", "logprob": 0.0}, {"token": ":", "logprob": 0.0}, {"token": " C", "logprob": -1.6930170059204102}, {"token": "", "logprob": -0.019396279007196426}]}

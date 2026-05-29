@@ -1008,6 +1008,9 @@ def run_expanded_score_comparison(
     data: dict[str, list[dict]],
     real_verifier_scores: dict[str, dict[str, dict[int, np.ndarray]]] | None = None,
     judge_scores: dict[str, dict[int, np.ndarray]] | None = None,
+    judge_score_name: str = "heuristic_judge_score",
+    judge_scores_source: str = "deterministic_fallback_heuristic_not_live_model_judge",
+    judge_leakage_status: str = "no_reference_heuristic",
 ) -> tuple[pd.DataFrame, dict]:
     """Score-function comparison with all raw-derived and learned features."""
     print("Running Experiment 7: expanded score-function comparison")
@@ -1074,16 +1077,34 @@ def run_expanded_score_comparison(
             score_getters[vname] = _vget
 
     judge_scores_used = False
-    if judge_scores and comparison_data and set(comparison_data).issubset(set(judge_scores)):
-        def _jget(model, rec, js=judge_scores):
-            pidx = int(rec["problem_idx"])
-            if model in js and pidx in js[model]:
-                arr = js[model][pidx]
-                if len(arr) == len(rec["all_scores"]):
-                    return arr
-            return np.full(len(rec["all_scores"]), 0.5)
-        score_getters["heuristic_judge_score"] = _jget
-        judge_scores_used = True
+    if judge_scores and comparison_data:
+        judge_filtered_data: dict[str, list[dict]] = {}
+        for model, recs in comparison_data.items():
+            kept = []
+            for rec in recs:
+                pidx = int(rec["problem_idx"])
+                if (
+                    model in judge_scores
+                    and pidx in judge_scores[model]
+                    and len(judge_scores[model][pidx]) == len(rec["all_scores"])
+                ):
+                    kept.append(rec)
+            if kept:
+                judge_filtered_data[model] = kept
+
+        if judge_filtered_data:
+            comparison_data = judge_filtered_data
+            comparison_models = sorted(judge_filtered_data)
+
+            def _jget(model, rec, js=judge_scores):
+                pidx = int(rec["problem_idx"])
+                if model in js and pidx in js[model]:
+                    arr = js[model][pidx]
+                    if len(arr) == len(rec["all_scores"]):
+                        return arr
+                return np.full(len(rec["all_scores"]), 0.5)
+            score_getters[judge_score_name] = _jget
+            judge_scores_used = True
 
     df = evaluate_score_functions(comparison_data, score_getters, SCORE_N_VALUES, test_only=True)
 
@@ -1095,7 +1116,7 @@ def run_expanded_score_comparison(
         "answer_format_score": "none",
         "calibrated_binned_posterior": "train_test_split",
         "oracle_correctness_verifier": "oracle",
-        "heuristic_judge_score": "no_reference_heuristic",
+        judge_score_name: judge_leakage_status,
     }
     for ctype in (real_verifier_scores or {}):
         leakage_map[f"{ctype}_verifier_score"] = "train_test_split"
@@ -1111,6 +1132,8 @@ def run_expanded_score_comparison(
         "features_available": features_lookup is not None,
         "judge_scores_available": judge_scores is not None,
         "judge_scores_used": judge_scores_used,
+        "judge_scores_source": judge_scores_source,
+        "judge_score_name": judge_score_name if judge_scores_used else None,
         "comparison_models": comparison_models,
         "verifier_scores_available": real_verifier_scores is not None,
     }
@@ -1188,6 +1211,7 @@ def write_summary(
     expanded_score_summary: dict | None = None,
     judge_summary: dict | None = None,
     expanded_pilot_summary: dict | None = None,
+    allocation_summary: dict | None = None,
 ) -> None:
     models = sorted(data)
     n_problems = max((len(v) for v in data.values()), default=0)
@@ -1237,27 +1261,103 @@ def write_summary(
 
     expanded_pilot_section = ""
     if expanded_pilot_summary:
+        max_samples = expanded_pilot_summary.get("max_samples_per_problem")
+        k_values = expanded_pilot_summary.get("K_values_tested", [])
+        highest_k = max(k_values) if k_values else None
+        if max_samples and int(max_samples) >= 256 and highest_k and highest_k >= 192:
+            pilot_note = (
+                f"The five-model curve is complete through K={highest_k}; "
+                "K=128/192 is evidenced for all expanded-pilot models."
+            )
+        elif max_samples and int(max_samples) > 48:
+            pilot_note = (
+                f"Current measured artifacts include up to {max_samples} samples/problem for this subset."
+            )
+        else:
+            pilot_note = "With 48 samples/problem, maximum pilot K is ~40 (remaining held out for evaluation)."
+
+        coverage = expanded_pilot_summary.get("per_model_sample_coverage", {})
+        coverage_text = "N/A"
+        if coverage:
+            coverage_text = "; ".join(
+                f"{model}: {stats.get('records_at_max', 0)}/{stats.get('num_records', 0)} "
+                f"records at n={stats.get('max_samples', 0)}"
+                for model, stats in coverage.items()
+            )
+
+        expanded_trend = "N/A"
+        pilot_table = TABLE_DIR / "expanded_pilot_sample_complexity.csv"
+        if pilot_table.exists():
+            try:
+                ep_df = pd.read_csv(pilot_table)
+                n8 = ep_df[ep_df["N"] == 8].groupby("K")["heldout_MAE_mean"].mean().reset_index()
+                expanded_trend = ", ".join(f"K={int(r.K)}: {r.heldout_MAE_mean:.3f}" for r in n8.itertuples())
+            except Exception:
+                expanded_trend = "N/A"
         expanded_pilot_section = f"""
 3b. Expanded pilot sample-complexity
 - Models: {expanded_pilot_summary.get('models', [])}
 - Problems: {expanded_pilot_summary.get('n_problems', '?')} stratified problems
 - K values: {expanded_pilot_summary.get('K_values_tested', [])}
+- N values: {expanded_pilot_summary.get('N_values_tested', [])}
 - Data source: {expanded_pilot_summary.get('data_source', 'existing_48_samples')}
-- Note: With 48 samples/problem, maximum pilot K is ~40 (remaining held out for evaluation).
-- Larger K values (64, 96, 128) require additional sample collection beyond the current 48.
+- Coverage: {coverage_text}
+- N=8 held-out MAE trend: {expanded_trend}
+- Note: {pilot_note}
 """
 
     expanded_score_section = ""
     if expanded_score_summary:
         sf_list = expanded_score_summary.get("score_functions", [])
+        judge_source = expanded_score_summary.get("judge_scores_source", "none")
+        judge_name = expanded_score_summary.get("judge_score_name", "N/A")
+        live_judge_lines = ""
+        live_judge_summary_path = OUT_DIR / "live_judge_score_summary.json"
+        if live_judge_summary_path.exists():
+            try:
+                live = json.loads(live_judge_summary_path.read_text(encoding="utf-8"))
+                live_judge_lines = (
+                    "\n"
+                    f"- Live LLM judge coverage: {live.get('num_model_problem_pairs', 0)}/"
+                    f"{live.get('manifest_expected_model_problem_pairs', '?')} model/problem pairs "
+                    f"and {live.get('num_model_problem_pairs', 0) * live.get('manifest_samples_per_problem', 0)}/"
+                    f"{live.get('manifest_expected_model_problem_pairs', 0) * live.get('manifest_samples_per_problem', 0)} judgments "
+                    f"for the {live.get('manifest_n_problems', '?')}-problem manifest.\n"
+                    f"- Live LLM judge summary: exact-law MAE={fmt_float(live.get('mean_mae'), 6)}, "
+                    f"mean AUC={fmt_float(live.get('mean_live_judge_auc'), 4)}, "
+                    f"mean logprob AUC on same pairs={fmt_float(live.get('mean_logprob_auc_on_same_pairs'), 4)}, "
+                    f"N=48 delta over mean logprob={fmt_float(live.get('n48_improvement_over_meanlogprob'), 4)}."
+                )
+            except (OSError, json.JSONDecodeError):
+                live_judge_lines = ""
         expanded_score_section = f"""
 4b. Expanded score-function comparison
 - Score functions tested: {sf_list}
 - Features from raw response caches: total_logprob, length_penalized_logprob, response_length, answer_format.
 - Learned verifier scores: logistic regression, gradient boosting, calibrated variants.
+- Judge score source: {judge_source}; score name: {judge_name}.{live_judge_lines}
 - oracle_correctness_verifier is included as a DIAGNOSTIC UPPER BOUND only.
 - Leakage status tracked per score function (none / train_test_split / oracle).
-- The checked-in structured judge-score artifact is a heuristic diagnostic and is not used for paper-facing model-judge claims unless replaced by a complete live judge run.
+- Heuristic judge artifacts remain diagnostic only; live judge scores may be used for paper-facing score-agnostic claims when present.
+"""
+
+    allocation_section = ""
+    if allocation_summary and allocation_summary.get("status") == "completed":
+        policies = allocation_summary.get("policies", [])
+        ranking = allocation_summary.get("ranking_at_reference_budget", [])
+        rank_text = "N/A"
+        if ranking:
+            rank_text = ", ".join(
+                f"{r.get('policy')}: {fmt_float(r.get('accuracy'), 4)}" for r in ranking
+            )
+        allocation_section = f"""
+6d. Adaptive compute allocation
+- Policies compared under identical fixed budgets: {policies}
+- Models: {allocation_summary.get('models', [])}
+- Reference-budget ranking: {rank_text}
+- Moment-law improvement over uniform at reference budget: {fmt_float(allocation_summary.get('moment_law_improvement_over_uniform_at_reference_budget'), 4)}
+- AUC/kappa-policy improvement over uniform at reference budget: {fmt_float(allocation_summary.get('auc_kappa_improvement_over_uniform_at_reference_budget'), 4)}
+- Budget note: {allocation_summary.get('budget_note', 'N/A')}
 """
 
     summary = f"""DU-ALIGNED THEOREM 1 EXPERIMENT SUMMARY
@@ -1298,11 +1398,13 @@ def write_summary(
 - Is P(correct|score) monotone? {posterior_summary.get("monotone_models", 0)}/{posterior_summary.get("total_models", 0)} models pass the bin monotonicity check.
 - Calibrated score improves selection: N=48 top-score={fmt_float(posterior_summary.get("mean_top_score_acc_N48"))}, calibrated={fmt_float(posterior_summary.get("mean_calibrated_score_acc_N48"))}.
 {rv_section}{judge_section}
+{allocation_section}
 7. Paper-ready claims
 - Claim 1: Best-of-N top-score selection obeys an exact per-problem order-statistic law, validated across {len(models)} models.
 - Claim 2: AUC/kappa is exact for N=2 only. High-N behavior requires the full moment hierarchy.
 - Claim 3: The same law applies to any score function, including likelihood, calibrated posterior, and learned verifiers.
 - Claim 4 (if real verifiers tested): Learned feature-based verifiers trained on response features provide real, non-oracle reranking that the theorem predicts.
+- Claim 5 (if allocation tested): The per-problem law supports adaptive inference-budget allocation under fixed total samples.
 
 8. Caveats and claims to avoid
 - No claim of global optimality of any score function.
@@ -1360,6 +1462,7 @@ def main() -> None:
     expanded_score_summary = None
     judge_summary = None
     expanded_pilot_summary = None
+    allocation_summary = None
     real_verifier_df = pd.DataFrame()
     expanded_score_df = pd.DataFrame()
 
@@ -1382,7 +1485,20 @@ def main() -> None:
                     real_verifier_scores[ctype][model] = scores
 
         judge_scores = None
-        judge_path = OUT_DIR / "model_judge" / "judged_responses.jsonl"
+        live_judge_path = OUT_DIR / "model_judge" / "judged_responses_live.jsonl"
+        heuristic_judge_path = OUT_DIR / "model_judge" / "judged_responses.jsonl"
+        if live_judge_path.exists():
+            judge_path = live_judge_path
+            judge_mode = "live_no_reference"
+            judge_score_name = "live_llm_judge_score"
+            judge_source = "live_nim_model_judge"
+            judge_leakage_status = "live_no_reference"
+        else:
+            judge_path = heuristic_judge_path
+            judge_mode = "heuristic_no_reference"
+            judge_score_name = "heuristic_judge_score"
+            judge_source = "deterministic_fallback_heuristic_not_live_model_judge"
+            judge_leakage_status = "no_reference_heuristic"
         if judge_path.exists():
             try:
                 from experiments import _load_judge_for_scoring
@@ -1390,14 +1506,14 @@ def main() -> None:
                 pass
             try:
                 from experiments._judge_loader import load_judge_scores as _ljs
-                judge_scores = _ljs(judge_path, "heuristic_no_reference")
+                judge_scores = _ljs(judge_path, judge_mode)
             except ImportError:
                 pass
             if judge_scores is None:
                 try:
                     sys.path.insert(0, str(PROJECT_ROOT / "experiments"))
                     from _judge_loader import load_judge_scores as _ljs2
-                    judge_scores = _ljs2(judge_path, "heuristic_no_reference")
+                    judge_scores = _ljs2(judge_path, judge_mode)
                 except ImportError:
                     pass
             if judge_scores is None:
@@ -1410,7 +1526,7 @@ def main() -> None:
                     mod = importlib.util.module_from_spec(spec)
                     try:
                         spec.loader.exec_module(mod)
-                        judge_scores = mod.load_judge_scores(judge_path, "heuristic_no_reference")
+                        judge_scores = mod.load_judge_scores(judge_path, judge_mode)
                     except Exception:
                         pass
 
@@ -1418,6 +1534,9 @@ def main() -> None:
             data,
             real_verifier_scores=real_verifier_scores,
             judge_scores=judge_scores,
+            judge_score_name=judge_score_name,
+            judge_scores_source=judge_source,
+            judge_leakage_status=judge_leakage_status,
         )
 
         try:
@@ -1425,23 +1544,37 @@ def main() -> None:
         except ImportError:
             pass
         try:
-            import importlib.util
-            spec = importlib.util.spec_from_file_location(
-                "ep_mod",
-                str(PROJECT_ROOT / "experiments" / "12_expanded_pilot.py"),
-            )
-            if spec and spec.loader:
-                mod = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(mod)
-                target_models = [m for m in ["3B", "8B", "70B", "Qwen397B", "Mixtral8x22B"] if m in data]
-                if target_models:
-                    selected = mod.select_stratified_problems(target_models, 100)
-                    agg_rows, expanded_pilot_summary = mod.run_expanded_analysis_existing(selected, target_models)
-                    import pandas as _pd
-                    _pd.DataFrame(agg_rows).to_csv(TABLE_DIR / "expanded_pilot_sample_complexity.csv", index=False)
-                    mod.make_expanded_pilot_figure(agg_rows)
+            expanded_summary_path = OUT_DIR / "expanded_pilot_summary.json"
+            if expanded_summary_path.exists():
+                expanded_pilot_summary = json.loads(expanded_summary_path.read_text(encoding="utf-8"))
+            else:
+                import importlib.util
+                spec = importlib.util.spec_from_file_location(
+                    "ep_mod",
+                    str(PROJECT_ROOT / "experiments" / "12_expanded_pilot.py"),
+                )
+                if spec and spec.loader:
+                    mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(mod)
+                    target_models = [
+                        m for m in ["3B", "70B", "Super49B", "Super120B", "MistralSmall119B"]
+                        if m in data
+                    ]
+                    if target_models:
+                        selected = mod.select_stratified_problems(target_models, 100)
+                        agg_rows, expanded_pilot_summary = mod.run_expanded_analysis_existing(selected, target_models)
+                        import pandas as _pd
+                        _pd.DataFrame(agg_rows).to_csv(TABLE_DIR / "expanded_pilot_sample_complexity.csv", index=False)
+                        mod.make_expanded_pilot_figure(agg_rows)
         except Exception as e:
             print(f"  Expanded pilot analysis failed: {e}")
+
+        allocation_path = OUT_DIR / "adaptive_allocation_summary.json"
+        if allocation_path.exists():
+            try:
+                allocation_summary = json.loads(allocation_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                allocation_summary = None
 
     write_summary(
         audit=audit,
@@ -1455,6 +1588,7 @@ def main() -> None:
         expanded_score_summary=expanded_score_summary,
         judge_summary=judge_summary,
         expanded_pilot_summary=expanded_pilot_summary,
+        allocation_summary=allocation_summary,
     )
     write_results_json(
         audit=audit,
@@ -1466,6 +1600,7 @@ def main() -> None:
         real_verifier_extension=real_verifier_summary,
         expanded_score_comparison=expanded_score_summary,
         expanded_pilot=expanded_pilot_summary,
+        adaptive_allocation=allocation_summary,
         generated_tables=sorted(str(p.relative_to(OUT_DIR)) for p in TABLE_DIR.glob("*.csv")),
         generated_figures=sorted(str(p.relative_to(OUT_DIR)) for p in FIGURE_DIR.glob("*.pdf")),
         row_counts={
@@ -1476,6 +1611,11 @@ def main() -> None:
             "posterior_rows": int(len(posterior_df)),
             "real_verifier_rows": int(len(real_verifier_df)),
             "expanded_score_rows": int(len(expanded_score_df)),
+            "adaptive_allocation_rows": int(
+                len(pd.read_csv(TABLE_DIR / "adaptive_allocation.csv"))
+                if (TABLE_DIR / "adaptive_allocation.csv").exists()
+                else 0
+            ),
         },
     )
 
