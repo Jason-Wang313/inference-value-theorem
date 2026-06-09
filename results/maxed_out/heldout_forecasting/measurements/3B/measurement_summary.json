@@ -1,0 +1,11 @@
+{
+  "model": "3B",
+  "target_samples": 4096,
+  "problem_indices": [
+    118
+  ],
+  "measured": 1,
+  "skipped_missing": 0,
+  "skipped_bad": 0,
+  "finished_utc": "2026-06-05T12:28:19+00:00"
+}

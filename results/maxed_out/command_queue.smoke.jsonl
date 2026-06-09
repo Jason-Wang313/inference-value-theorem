@@ -1,0 +1,8 @@
+{"phase": "heldout_collect_math", "model": "3B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model 3B --n-problems 3 --target-samples 8"}
+{"phase": "heldout_measure_math", "model": "3B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model 3B --n-problems 3 --target-samples 8"}
+{"phase": "heldout_analyze", "model": "3B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models 3B --smoke"}
+{"phase": "heldout_collect_math", "model": "70B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model 70B --n-problems 3 --target-samples 8"}
+{"phase": "heldout_measure_math", "model": "70B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model 70B --n-problems 3 --target-samples 8"}
+{"phase": "heldout_analyze", "model": "70B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models 70B --smoke"}
+{"phase": "real_verifier_seed_manifest", "command": "python experiments/11_model_judge.py --live --models 3B 70B --n-problems 3 --max-samples 4 --workers 12 --request-delay 3 --rate-limit-cooldown 90 --max-task-attempts 16 --live-batch-size 8"}
+{"phase": "cross_benchmark_collect_measure_analyze", "command": "python experiments/16_cross_benchmark.py --benchmarks math500 gpqa_diamond --model-set all --n-tasks 3 --n-samples 4 --batch-size 1 --workers 192 --collect --measure --analyze --allow-unsafe-code-exec --code-test-scope public --measure-workers 12"}

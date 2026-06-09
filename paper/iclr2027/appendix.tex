@@ -1,0 +1,171 @@
+\section{Proof}
+\label{app:proof}
+
+We prove Theorem~\ref{thm:selector}. Sort the empirical response pool by
+nondecreasing score and group identical scores. Let $M$ be the maximum sorted
+rank among the $N$ independent draws. For a tied group $g$ occupying ranks
+$[a_g,b_g]$,
+\[
+\Pr(M\in[a_g,b_g])
+=
+\Pr(M\leq b_g)-\Pr(M\leq a_g-1)
+=
+\left(\frac{b_g}{n}\right)^N
+-
+\left(\frac{a_g-1}{n}\right)^N .
+\]
+Conditioned on $M\in[a_g,b_g]$, all selected top-score candidates lie inside
+group $g$. Uniform random tie-breaking makes the selected response correct
+with probability $c_g/k_g$. Summing over the disjoint tied-score groups gives
+Equation~\ref{eq:selector-law}. For $N=1$, each empirical response is selected
+with probability $1/n$, so $f_1=p$.
+
+\section{AUC Special Case}
+\label{app:auc}
+
+For $N=2$, draw two empirical responses. With probability $p^2$, both are
+correct and the selected response is correct. With probability
+$2p(1-p)$, exactly one is correct; conditional on this event, the probability
+that the correct response wins the score comparison, including half credit for
+ties induced by uniform tie-breaking, is
+$\Kappa=\Pr(S^+>S^-)+\frac{1}{2}\Pr(S^+=S^-)$. With probability
+$(1-p)^2$, both are incorrect. Therefore
+\[
+f_2 = p^2 + 2p(1-p)\Kappa .
+\]
+For $N>2$, events involving the maximum among three or more draws depend on
+higher powers of the empirical rank CDF, which is why the scalar pairwise
+quantity $\Kappa$ is not generally sufficient.
+
+\section{Additional Result Tables}
+\label{app:tables}
+
+\begin{table}[h]
+\centering
+\caption{Moment hierarchy MAE by $N$ on the theorem-aligned held-out split.}
+\label{tab:moment-values}
+\begin{tabular}{r r r}
+\toprule
+$N$ & AUC-only MAE & Moment MAE \\
+\midrule
+2 & 0.000000 & $7.05\times10^{-18}$ \\
+3 & 0.015816 & $4.94\times10^{-18}$ \\
+4 & 0.019492 & $7.43\times10^{-18}$ \\
+8 & 0.032017 & $6.57\times10^{-18}$ \\
+16 & 0.047628 & $7.44\times10^{-18}$ \\
+32 & 0.068146 & $6.68\times10^{-18}$ \\
+48 & 0.082098 & $4.08\times10^{-18}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Expanded pilot $N=8$ held-out forecasting MAE. The curve supports
+sample-complexity analysis, not tiny-pilot sufficiency.}
+\label{tab:pilot-values}
+\begin{tabular}{r r}
+\toprule
+$K$ & Held-out MAE \\
+\midrule
+8 & 0.093 \\
+16 & 0.069 \\
+24 & 0.057 \\
+32 & 0.051 \\
+48 & 0.043 \\
+64 & 0.039 \\
+96 & 0.035 \\
+128 & 0.034 \\
+192 & 0.039 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Pilot-scale cross-benchmark summary. All four completed families
+have complete measured coverage at the requested pilot scale.}
+\label{tab:cross-values}
+\begin{tabular}{l r r r r}
+\toprule
+Benchmark & Records & Nondeg. & Law MAE & $N=48$ acc. \\
+\midrule
+GPQA Diamond & 320/320 & 251 & 0.0 & 0.5890 \\
+IFEval & 320/320 & 164 & 0.0 & 0.7962 \\
+LiveBench selected & 320/320 & 141 & 0.0 & 0.2546 \\
+LiveCodeBench & 320/320 & 262 & 0.0 & 0.5246 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Reference-budget adaptive allocation ranking on the expanded-pilot
+setting. Oracle is an upper bound, not a deployable policy.}
+\label{tab:allocation-values}
+\begin{tabular}{l r}
+\toprule
+Policy & Accuracy \\
+\midrule
+Oracle & 0.6644 \\
+AUC/kappa-based & 0.6359 \\
+Moment-law & 0.6351 \\
+$p$-based & 0.6255 \\
+Uniform & 0.6226 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Evidence Manifest}
+\label{app:evidence}
+
+The final wording was checked against the following repository artifacts.
+
+\begin{itemize}[leftmargin=*]
+\item Core theorem and moment hierarchy:
+\path{results/du_aligned/du_experiment_results.json} and
+\path{results/du_aligned/du_experiment_summary.txt}.
+\item Expanded pilots, learned verifiers, live judge scores, and adaptive
+allocation:
+\path{results/du_aligned/paper_claims_status.md},
+\path{results/du_aligned/live_judge_score_summary.json}, and
+\path{results/du_aligned/adaptive_allocation_summary.json}.
+\item Cross-benchmark pilots:
+\path{results/benchmarks/cross_benchmark_summary.json} and
+\path{results/benchmarks/cross_benchmark_summary.csv}.
+\item Held-out 4096-depth slice:
+\path{results/maxed_out/heldout_forecasting/measurements/3B/} and
+\path{results/maxed_out/heldout_forecasting/tables/heldout_locked_estimator_summary.csv}.
+\item Gate report:
+\path{results/maxed_out/claim_gate_report.md} and
+\path{results/maxed_out/claim_gate_report.json}.
+\end{itemize}
+
+\section{Claim Gate Details}
+\label{app:gates}
+
+The latest gate report has summary \texttt{\{'PASS': 8, 'WARN': 1,
+'INFO': 1, 'MISSING': 4\}}. Claim-blocking passes cover core exact-law MAE,
+moment exactness, held-out $K=128/256/512,N=8$ diagnostic rows over the
+completed 4096-depth slice, live-judge delta over logprob, four-family
+cross-benchmark exact-law coverage, and adaptive allocation delta. The
+claim-blocking missing gates are full held-out coverage, maxed live-judge
+coverage, six-family cross-benchmark presence, and manifest-scale
+cross-benchmark coverage.
+
+The incomplete raw-cache frontier is 3B/MATH problem 119 with 3152/4096 valid
+raw-cache samples at the time of the handoff. It is not measured at target
+depth and is not counted in any held-out metric.
+
+\section{Large-Language-Model Usage Disclosure}
+\label{app:llm}
+
+Codex, an OpenAI language model accessed through the local coding-agent
+interface, materially assisted with this manuscript package. Its role was to
+organize the paper from verified repository artifacts, draft and edit LaTeX
+text, create tables and packaging scripts, run local build and hygiene checks,
+and help phrase the claim boundaries. The human authors remain responsible for
+all scientific claims, theorem statements, artifact selection, and final
+submission decisions. No result value was invented by the model; numeric
+claims were traced to repository artifacts listed in
+Appendix~\ref{app:evidence}.

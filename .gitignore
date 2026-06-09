@@ -1,6 +1,13 @@
 __pycache__/
 *.py[cod]
 *.log
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.out
+*.synctex.gz
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -14,6 +21,10 @@ data/raw/
 data/math500_raw/
 logs/
 collection*.log
+
+# Large maxed-out diagnostic detail tables are regenerated locally. Commit the
+# compact summaries used by the paper instead.
+results/maxed_out/expanded_pilot_proxy/*_detail.csv
 
 # Local editor and OS files.
 .DS_Store

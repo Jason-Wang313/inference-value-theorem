@@ -1,0 +1,231 @@
+{
+  "created_utc": "2026-05-29T12:59:02+00:00",
+  "smoke": true,
+  "manifest": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\manifest.smoke.json",
+  "policy": {
+    "no_result_fabrication": true,
+    "no_label_or_ground_truth_changes_to_pass_gates": true,
+    "estimator_or_policy_tuning_must_use_pilot_or_calibration_only": true,
+    "independent_evaluation_gates_are_final": true
+  },
+  "ideal_gates": {
+    "exact_law_mae": 0.001,
+    "cross_benchmark_law_mae": 0.005,
+    "heldout_k128_mae": 0.03,
+    "heldout_k256_mae": 0.02,
+    "heldout_k512_mae": 0.015,
+    "verifier_delta_over_logprob": 0.03,
+    "adaptive_delta_over_uniform": 0.0
+  },
+  "summary": {
+    "PASS": 6,
+    "WARN": 1,
+    "INFO": 1,
+    "MISSING": 5
+  },
+  "claim_summary": {
+    "PASS": 6,
+    "MISSING": 5
+  },
+  "diagnostic_summary": {
+    "WARN": 1,
+    "INFO": 1
+  },
+  "all_passed": false,
+  "gates": [
+    {
+      "name": "core_exact_law_mae",
+      "category": "claim",
+      "status": "PASS",
+      "value": 0.0006223688355332208,
+      "threshold": "<= 0.001",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\du_experiment_results.json",
+      "requirement": "Full-estimate exact-law validation must be near numerical precision.",
+      "action": "If this fails, inspect tie handling, score alignment, and measurement/simulation parity; do not change labels or omit failures.",
+      "claim_blocking": true
+    },
+    {
+      "name": "moment_hierarchy_exactness",
+      "category": "claim",
+      "status": "PASS",
+      "value": 7.44110972799246e-18,
+      "threshold": "<= 1e-9",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\du_experiment_results.json",
+      "requirement": "Moment-law prediction should be exact up to floating-point error when using the full empirical distribution.",
+      "action": "If this fails, fix the moment/rank formula before scaling any new experiments.",
+      "claim_blocking": true
+    },
+    {
+      "name": "expanded_pilot_proxy_K128_N8",
+      "category": "diagnostic",
+      "status": "WARN",
+      "value": 0.04014398587894077,
+      "threshold": "<= 0.03",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\expanded_pilot_proxy\\expanded_proxy_locked_summary.csv",
+      "requirement": "Existing 256-sample proxy is diagnostic pre-flight evidence for the pilot-forecasting target, not final proof.",
+      "action": "If this diagnostic proxy fails, do not overclaim tiny-pilot sufficiency; the next legitimate step is the full 4096-sample locked split, with estimator selection on calibration data only and final reporting on the independent evaluation pool.",
+      "claim_blocking": false
+    },
+    {
+      "name": "expanded_pilot_proxy_K256_N8",
+      "category": "diagnostic",
+      "status": "INFO",
+      "value": null,
+      "threshold": "<= 0.02",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\expanded_pilot_proxy\\expanded_proxy_locked_summary.csv",
+      "requirement": "Existing 256-sample proxy is diagnostic pre-flight evidence for the pilot-forecasting target, not final proof.",
+      "action": "This proxy pool cannot certify the gate at this K; run the 4096-sample locked split and select estimators only on calibration data.",
+      "claim_blocking": false
+    },
+    {
+      "name": "maxed_heldout_K128_N8",
+      "category": "claim",
+      "status": "MISSING",
+      "value": null,
+      "threshold": "<= 0.03",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\heldout_forecasting\\smoke_tables\\heldout_locked_estimator_summary.csv",
+      "requirement": "Maxed-out held-out forecasting must hit the paper's sample-complexity gate on independent evaluation.",
+      "action": "If this fails, improve estimators on pilot/calibration only, add samples, or scope the claim to the observed sample-complexity curve.",
+      "claim_blocking": true
+    },
+    {
+      "name": "maxed_heldout_K256_N8",
+      "category": "claim",
+      "status": "MISSING",
+      "value": null,
+      "threshold": "<= 0.02",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\heldout_forecasting\\smoke_tables\\heldout_locked_estimator_summary.csv",
+      "requirement": "Maxed-out held-out forecasting must hit the paper's sample-complexity gate on independent evaluation.",
+      "action": "If this fails, improve estimators on pilot/calibration only, add samples, or scope the claim to the observed sample-complexity curve.",
+      "claim_blocking": true
+    },
+    {
+      "name": "maxed_heldout_K512_N8",
+      "category": "claim",
+      "status": "MISSING",
+      "value": null,
+      "threshold": "<= 0.015",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\heldout_forecasting\\smoke_tables\\heldout_locked_estimator_summary.csv",
+      "requirement": "Maxed-out held-out forecasting must hit the paper's sample-complexity gate on independent evaluation.",
+      "action": "If this fails, improve estimators on pilot/calibration only, add samples, or scope the claim to the observed sample-complexity curve.",
+      "claim_blocking": true
+    },
+    {
+      "name": "live_judge_delta_over_logprob",
+      "category": "claim",
+      "status": "PASS",
+      "value": 0.06444006895093203,
+      "threshold": ">= 0.03",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\live_judge_score_summary.json",
+      "requirement": "A real judge/verifier should beat mean logprob by at least +0.03 at high N.",
+      "action": "If this fails, add independent judges, calibrate judge ensembles on calibration data, and evaluate once on held-out pairs.",
+      "claim_blocking": true
+    },
+    {
+      "name": "maxed_live_judge_coverage",
+      "category": "claim",
+      "status": "PASS",
+      "value": 135,
+      "threshold": ">= 6",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\live_judge_score_summary.json",
+      "requirement": "Maxed-out live-judge claim needs complete model/problem coverage for the live panel.",
+      "action": "Run the live judge command queue to completion; keep existing 135-pair result scoped as a subset until then.",
+      "claim_blocking": true
+    },
+    {
+      "name": "cross_benchmark_exact_law",
+      "category": "claim",
+      "status": "PASS",
+      "value": {
+        "mae": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "coverage": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "threshold": "MAE <= 0.005 and coverage=1.0",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\benchmarks\\cross_benchmark_summary.json",
+      "requirement": "Every completed benchmark should hit the exact-law MAE and grading-coverage gate.",
+      "action": "If this fails, fix grader/score alignment before adding more benchmarks.",
+      "claim_blocking": true
+    },
+    {
+      "name": "cross_benchmark_family_count",
+      "category": "claim",
+      "status": "MISSING",
+      "value": {
+        "completed": 4,
+        "missing": [
+          "math500",
+          "humaneval_mbpp"
+        ]
+      },
+      "threshold": ">= 6",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\benchmarks\\cross_benchmark_summary.json",
+      "requirement": "The maximum generalization claim needs at least six benchmark families.",
+      "action": "Run and measure the two missing families, MATH500 and MBPP-backed humaneval_mbpp, before claiming six-family generality.",
+      "claim_blocking": true
+    },
+    {
+      "name": "maxed_cross_benchmark_scale",
+      "category": "claim",
+      "status": "MISSING",
+      "value": {
+        "required": {
+          "benchmarks": [
+            "math500",
+            "gpqa_diamond",
+            "ifeval",
+            "livebench_selected",
+            "livecodebench",
+            "humaneval_mbpp"
+          ],
+          "task_limit": 3,
+          "samples_per_task": 4,
+          "model_count": 2
+        },
+        "complete": [
+          "gpqa_diamond",
+          "ifeval",
+          "livebench_selected",
+          "livecodebench"
+        ],
+        "incomplete": {
+          "math500": {
+            "issues": [
+              "missing_family"
+            ]
+          },
+          "humaneval_mbpp": {
+            "issues": [
+              "missing_family"
+            ]
+          }
+        }
+      },
+      "threshold": "6 families at manifest task limit, sample depth, model count, and 100% measured coverage",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\benchmarks\\cross_benchmark_summary.json",
+      "requirement": "The maximum cross-benchmark claim requires the manifest-scale run, not smoke-scale family presence.",
+      "action": "Run the full cross-benchmark command queue with 500 requested tasks, 128 samples/task, and the full live model panel; then regenerate analysis.",
+      "claim_blocking": true
+    },
+    {
+      "name": "adaptive_allocation_delta",
+      "category": "claim",
+      "status": "PASS",
+      "value": 0.012464669900157044,
+      "threshold": "> 0",
+      "evidence": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\du_aligned\\adaptive_allocation_summary.json",
+      "requirement": "Moment-law allocation should beat uniform under fixed budget.",
+      "action": "If this fails, tune allocation policies on calibration seeds only and preserve oracle/uniform baselines.",
+      "claim_blocking": true
+    }
+  ]
+}

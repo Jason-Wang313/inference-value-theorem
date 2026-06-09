@@ -1,0 +1,16 @@
+{
+  "model": "3B",
+  "model_name": "meta/llama-3.2-3b-instruct",
+  "target_samples": 4096,
+  "problem_count": 1,
+  "sample_slots": 4096,
+  "cached_before": 3520,
+  "missing_before": 576,
+  "jobs_before": 72,
+  "dry_run": true,
+  "started_utc": "2026-06-07T18:53:57+00:00",
+  "completed_batches": 0,
+  "failed_batches": 0,
+  "collected_samples": 0,
+  "finished_utc": "2026-06-07T18:53:57+00:00"
+}

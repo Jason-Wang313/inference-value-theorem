@@ -1,0 +1,342 @@
+\documentclass{article}
+
+\usepackage{iclr2027_conference,times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{enumitem}
+
+\title{The Inference Value Theorem: Exact Finite-Sample Laws for Best-of-N Selection}
+
+\author{Anonymous Authors}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\acc}{\mathrm{acc}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Kappa}{\kappa}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Best-of-$N$ sampling is a standard way to improve language-model accuracy:
+generate multiple candidate responses, score them, and return the highest
+scoring candidate. Its behavior is often summarized by pairwise score metrics
+such as AUC, but pairwise separation does not determine high-$N$ performance.
+We derive an exact finite empirical law for best-of-$N$ selection under any
+scalar score with random tie-breaking. The law shows that expected
+best-of-$N$ accuracy is governed by the conditional score-rank moment
+structure; AUC/kappa is the complete special case only for $N=2$. We validate
+the law across a 23-model theorem-aligned bundle, where the exact-law
+prediction attains mean absolute error (MAE) $6.22\times 10^{-4}$ and the
+moment predictor is exact up to $7.44\times 10^{-18}$. We further report
+finite-pilot forecasting, learned-verifier and live-judge scores, four
+pilot-scale cross-benchmark families, adaptive allocation, and a scoped
+119-record 4096-sample held-out MATH slice. The evidence supports the
+theorem's empirical relevance while explicitly leaving manifest-scale
+held-out coverage, six-family benchmark coverage, and broad live-judge
+generality as future work.
+\end{abstract}
+
+\section{Introduction}
+
+Best-of-$N$ inference converts additional sampling into accuracy by selecting
+one response from a set of candidates. The same template underlies verifier
+reranking, reward-model selection, LLM-as-a-judge scoring, and likelihood
+reranking \citep{cobbe2021training,zheng2023judging}. The practical question
+is not only whether a score is better than random pairwise ranking. It is how
+that score changes the entire best-of-$N$ curve as $N$ grows.
+
+The common pairwise answer is AUC. AUC is meaningful: for best-of-two
+selection, it is exactly the right summary once the base correctness rate is
+known. For $N>2$, however, it discards where correct responses lie in the
+score-rank distribution. Two scorers can have the same pairwise AUC and
+different high-$N$ behavior if one places a few correct responses at the very
+top while the other spreads correct responses through the middle ranks.
+
+This paper gives a finite-sample answer. For any fixed problem, finite
+response pool, scalar score, and random tie-breaking rule, expected
+best-of-$N$ accuracy is an exact order-statistic functional of the empirical
+score-label distribution. The formula is not asymptotic and does not assume a
+particular score family. It applies equally to log probability, learned
+verifier scores, calibrated posteriors, live judge scores, heuristic scores,
+and oracle diagnostic scores.
+
+The empirical contribution is deliberately scoped. We validate the theorem and
+its moment hierarchy across 23 models, then test whether the same law is
+useful for finite-pilot forecasting, verifier-style reranking, live judge
+scores, cross-benchmark pilots, and adaptive allocation. We do not claim that
+the current artifacts complete a full maxed-out manifest. The strongest
+supported claim is theorem-first: best-of-$N$ evaluation should report the
+score-rank moment structure, not only AUC.
+
+\paragraph{Contributions.}
+We make four contributions. (1) We derive an exact finite empirical selector
+law for best-of-$N$ selection with arbitrary scalar scores and random
+tie-breaking. (2) We show that AUC/kappa is complete for $N=2$ and
+insufficient for higher $N$, where rank-interval moments are necessary.
+(3) We validate the law on a 23-model theorem-aligned bundle with exact-law
+MAE $0.000622$ and moment-hierarchy error at floating-point scale. (4) We
+report scoped evidence for finite pilots, learned and live judge scores,
+cross-benchmark task broadening, adaptive allocation, and a 119-record
+4096-depth held-out MATH slice, while separating passed gates from missing
+manifest-scale gates.
+
+\section{Setup}
+
+Fix one problem and a finite empirical response pool of size $n$. Response
+$i$ has correctness label $Y_i\in\{0,1\}$ and scalar score $S_i$. Let
+$p=n^{-1}\sum_i Y_i$ be the empirical base correctness rate. Best-of-$N$
+draws $N$ candidates independently with replacement from the empirical pool
+and returns a response with maximum score, breaking top-score ties uniformly
+at random. Let $f_N$ denote the expected correctness of the selected response.
+
+Sampling with replacement matches the experiment simulator and the usual
+interpretation of the empirical pool as a finite distribution over candidate
+draws. The same rank formula can be adapted to without-replacement sampling,
+but that is not the protocol evaluated here.
+
+\section{Exact Selector Law}
+
+Sort responses by nondecreasing score. For each tied score group $g$, let
+$[a_g,b_g]$ be its one-indexed rank interval, $k_g=b_g-a_g+1$ its size, and
+$c_g=\sum_{i\in g}Y_i$ the number of correct responses in the group.
+
+\begin{theorem}[Finite empirical best-of-$N$ law]
+\label{thm:selector}
+Under the empirical with-replacement protocol above and uniform random
+tie-breaking among top-score ties,
+\begin{equation}
+\label{eq:selector-law}
+f_N =
+\sum_g \frac{c_g}{k_g}
+\left[
+\left(\frac{b_g}{n}\right)^N
+-
+\left(\frac{a_g-1}{n}\right)^N
+\right].
+\end{equation}
+For $N=1$, this reduces to $f_1=p$.
+\end{theorem}
+
+The bracketed term is the probability that the maximum rank among the $N$
+draws falls inside tied group $g$; the factor $c_g/k_g$ is the expected
+correctness after uniform tie-breaking within that group. The proof is a
+one-line partition of the maximum-rank event, and is given in
+Appendix~\ref{app:proof}.
+
+\paragraph{Moment view.}
+When $p>0$, define the empirical rank-interval moment
+\begin{equation}
+\theta_{N-1}=\frac{f_N}{Np}.
+\end{equation}
+Then $f_N=Np\theta_{N-1}$. In the continuous no-tie limit,
+$\theta_{N-1}$ is the $(N-1)$st moment of the mixture CDF evaluated at a
+correct response's score. The finite interval form in
+Equation~\ref{eq:selector-law} is the exact version used in the experiments.
+
+\paragraph{AUC is the $N=2$ special case.}
+Let $\Kappa=\Pr(S^+>S^-)+\tfrac{1}{2}\Pr(S^+=S^-)$ be the Mann-Whitney AUC
+with tie handling matched to the selector. For $N=2$,
+\begin{equation}
+\label{eq:n2}
+f_2=p^2+2p(1-p)\Kappa .
+\end{equation}
+The terms correspond to drawing two correct responses, or drawing one correct
+and one incorrect response and selecting the correct one. For $N>2$, AUC is
+not sufficient: Equation~\ref{eq:selector-law} depends on higher powers of the
+rank intervals, so high-score tail placement matters.
+
+\section{Empirical Protocol}
+
+All results are computed from repository artifacts generated before this
+manuscript package. The theorem-aligned experiments evaluate
+$N\in\{1,2,4,8,16,32,48\}$ across 23 model directories with up to 500 MATH
+records per model \citep{hendrycks2021math}. The primary score is mean log
+probability unless otherwise stated. We compare the exact empirical
+best-of-$N$ measurement to Equation~\ref{eq:selector-law}.
+
+For finite-pilot experiments, pilot samples estimate the score-rank law and
+held-out response pools evaluate predictions. Learned verifiers use
+problem-level train/test splits, not response-level leakage. Oracle
+correctness and synthetic verifier scores are included only as diagnostic
+upper bounds. The live-judge and cross-benchmark experiments are scoped to
+completed subsets. A claim-gate report records which ideal gates pass and
+which remain missing; no partial raw-cache record is counted as held-out
+evidence.
+
+\section{Theorem-Aligned Results}
+
+\begin{table}[t]
+\centering
+\caption{Core theorem-aligned evidence. The exact law is problem-conditional;
+pooling heterogeneous problems destroys the conditional structure.}
+\label{tab:core}
+\begin{tabular}{l r}
+\toprule
+Quantity & Value \\
+\midrule
+Models & 23 \\
+Problems per model & up to 500 \\
+Exact-law overall MAE & 0.000622 \\
+Tie rate & 0.000134 \\
+Per-problem MAE & 0.000602 \\
+Pooled MAE & 0.122364 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:core} shows the main theorem validation. The exact selector law
+predicts the measured best-of-$N$ curve with overall MAE $0.000622$ across
+35,964 model/problem/$N$ triples. The pooled baseline is much worse because
+best-of-$N$ selection depends on the within-problem score-label distribution;
+pooling across heterogeneous problems discards that conditioning.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.82\linewidth]{figures/moment_hierarchy_vs_auc.pdf}
+\caption{AUC/kappa is exact at $N=2$, but its error grows at high $N$.
+The rank-interval moment predictor remains exact up to floating-point error.}
+\label{fig:moment}
+\end{figure}
+
+Figure~\ref{fig:moment} tests whether pairwise AUC is enough to predict the
+curve. It is exact at $N=2$, as Equation~\ref{eq:n2} predicts, but the
+AUC-only MAE grows from $0.0158$ at $N=3$ to $0.0821$ at $N=48$. The moment
+predictor remains exact up to numerical error, with maximum observed MAE
+$7.44\times10^{-18}$. This is the central empirical message: high-$N$
+best-of-$N$ evaluation is a moment problem, not a pairwise-summary problem.
+
+\section{Estimation and Scoped Extensions}
+
+\paragraph{Finite pilots.}
+The exact law assumes the scored empirical response distribution is known.
+The finite-pilot experiments ask how forecasting improves as the pilot size
+$K$ increases. The expanded pilot covers five models, 100 stratified MATH
+problems per model, 256 samples per problem, 20 seeds, and
+$K\in\{8,16,24,32,48,64,96,128,192\}$. For $N=8$, held-out MAE decreases
+from $0.093$ at $K=8$ to $0.034$ at $K=128$, with $0.039$ at $K=192$
+(Figure~\ref{fig:pilot}). This supports a sample-complexity curve, not a
+claim that tiny pilots are universally sufficient.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.82\linewidth]{figures/expanded_pilot_sample_complexity.pdf}
+\caption{Expanded five-model pilot forecasting. Larger pilots generally
+reduce held-out error for $N=8$, but the curve is still sample-limited.}
+\label{fig:pilot}
+\end{figure}
+
+\paragraph{Held-out 4096-depth slice.}
+The maxed-out held-out campaign is incomplete, but it contains 119 contiguous
+3B/MATH records, problem 0 through problem 118, each measured at 4096 samples.
+On the locked diagnostic row for $K=128/256/512,N=8$, the selected estimator
+is \texttt{oracle\_full\_distribution}, with MAE $0.00564$, median absolute
+error $0.00356$, maximum absolute error $0.02670$, and 119 rows. This row is
+useful as a full-depth diagnostic of the measurement and gate machinery; it is
+not presented as a deployable finite-pilot estimator. Problem 119 has only
+3152/4096 valid raw-cache samples and is not counted.
+
+\begin{table}[t]
+\centering
+\caption{Scoped extensions. All rows are paper-facing only at the stated
+scale; maximum-scope generality remains limited by missing gates.}
+\label{tab:extensions}
+\begin{tabular}{p{0.31\linewidth}p{0.28\linewidth}p{0.29\linewidth}}
+\toprule
+Evidence & Scale & Main result \\
+\midrule
+Learned verifiers & 5 feature-rich models, problem-level splits &
+GBDT AUC 0.8505, $N=48$ accuracy 0.5823 \\
+Live judge score & 135/135 model/problem pairs, 6480 judgments &
+$N=48$ accuracy 0.5608 vs. 0.4963 for mean logprob \\
+Cross-benchmark pilots & GPQA, IFEval, LiveBench, LiveCodeBench; 16 models,
+20 tasks, 48 samples & 320/320 records per family; exact-law MAE 0.0 \\
+Adaptive allocation & 5-model expanded pilot, fixed budgets &
+Moment-law policy improves over uniform by 0.0125 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:extensions} summarizes score-agnostic and task-broadening
+evidence. Learned feature-based verifiers show that the law applies beyond
+likelihood scores. A live LLM judge improves over mean log probability on the
+completed 45-problem subset, while remaining governed by the same exact law.
+Cross-benchmark pilots cover GPQA Diamond \citep{rein2023gpqa}, IFEval
+\citep{zhou2023ifeval}, LiveBench selected \citep{white2024livebench}, and
+LiveCodeBench \citep{jain2024livecodebench}, with complete pilot-scale
+measurement and exact-law MAE 0.0 in each family. Adaptive allocation is
+positive but modest; the oracle policy remains an upper bound rather than an
+achieved deployment policy.
+
+\section{Claim Status and Limitations}
+
+\begin{table}[t]
+\centering
+\caption{Current claim-gate status. Passed gates support scoped wording;
+missing gates are explicitly excluded from the main claims.}
+\label{tab:gates}
+\begin{tabular}{p{0.48\linewidth}p{0.16\linewidth}p{0.23\linewidth}}
+\toprule
+Claim or gate & Status & Evidence scale \\
+\midrule
+Core exact-law MAE and moment exactness & PASS & 23-model theorem bundle \\
+Held-out $K=128/256/512,N=8$ diagnostic rows & PASS & 119 3B/MATH records \\
+Live judge delta over logprob & PASS & 135 completed pairs \\
+Cross-benchmark exact-law coverage & PASS & 4 pilot families \\
+Adaptive allocation delta & PASS & 5-model pilot \\
+Full held-out MATH manifest & MISSING & target 11,500 records \\
+Maxed live-judge coverage & MISSING & target at least 8000 pairs \\
+Six-family manifest-scale benchmarks & MISSING & missing MATH500 and MBPP-backed family \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The limitations are central to the paper's claim policy. First, the strongest
+held-out evidence is a 119-record 3B/MATH slice, not full 23-model,
+500-problem, 4096-depth coverage. Second, the cross-benchmark results are
+pilot-scale: four families at 20 tasks and 48 samples per model/task, not six
+families at 500 tasks and 128 samples. Third, the live-judge improvement is
+scoped to the completed subset and does not establish broad judge
+superiority. Fourth, finite-pilot forecasting remains sample-limited. Fifth,
+adaptive allocation is directionally useful but not globally optimal.
+
+\section{Conclusion}
+
+Best-of-$N$ selection has an exact finite empirical law. This law explains why
+AUC/kappa is exact for $N=2$ but insufficient for larger candidate sets, where
+score-rank moment structure controls performance. The current evidence
+validates the theorem across a broad theorem-aligned bundle and shows scoped
+utility for pilots, verifiers, judges, benchmark broadening, and allocation.
+The next empirical step is scale, not a new theorem: complete the missing
+manifest gates while preserving the same conditional, rank-based evaluation.
+
+\section*{Reproducibility Statement}
+All paper-facing numbers are traceable to artifacts under
+\path{results/du_aligned/}, \path{results/benchmarks/}, and
+\path{results/maxed_out/}. The exact selector implementation is in
+\path{src/theorem.py} and the theorem-aligned runner is
+\path{experiments/09_du_aligned.py}. The appendix lists the specific evidence
+files and includes the proof of Theorem~\ref{thm:selector}.
+
+\section*{Ethics Statement}
+This work analyzes evaluation methodology for language-model inference. It
+does not release new human-subject data, alter benchmark ground truth, or
+train models for deployment. The main ethical risk is overclaiming from
+partial evidence; the paper mitigates this by exposing missing gates and
+scoping live-judge and cross-benchmark conclusions to completed artifacts.
+
+\bibliographystyle{iclr2026_conference}
+\bibliography{references}
+
+\appendix
+\input{appendix}
+
+\end{document}

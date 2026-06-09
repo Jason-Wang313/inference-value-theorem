@@ -1,0 +1,35 @@
+{
+  "created_utc": "2026-05-29T12:38:34+00:00",
+  "records": 500,
+  "models": [
+    "3B",
+    "70B",
+    "MistralSmall119B",
+    "Super120B",
+    "Super49B"
+  ],
+  "seeds": 5,
+  "K_values": [
+    8,
+    16,
+    32,
+    48,
+    64,
+    96,
+    128,
+    160,
+    192
+  ],
+  "N_values": [
+    2,
+    8,
+    16,
+    32,
+    48,
+    64
+  ],
+  "tune_size": 32,
+  "select_size": 32,
+  "selection_policy": "choose estimator with lowest selector-calibration error; evaluate once on independent held-out slice",
+  "locked_summary": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\expanded_pilot_proxy\\expanded_proxy_locked_summary.csv"
+}

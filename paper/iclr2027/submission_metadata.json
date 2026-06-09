@@ -1,0 +1,51 @@
+{
+  "paper": {
+    "title": "The Inference Value Theorem: Exact Finite-Sample Laws for Best-of-N Selection",
+    "target": "ICLR 2027 anonymous review",
+    "created_date": "2026-06-09",
+    "scope": "submission-ready draft from current verified artifacts only"
+  },
+  "template": {
+    "status": "provisional",
+    "official_source_used": "ICLR 2026 author guide and template",
+    "author_guide_url": "https://iclr.cc/Conferences/2026/AuthorGuide",
+    "template_zip_url": "https://github.com/ICLR/Master-Template/raw/master/iclr2026.zip",
+    "unmodified_style_file": "iclr2026_conference.sty",
+    "provisional_style_file": "iclr2027_conference.sty",
+    "provisional_change": "running header year changed from 2026 to 2027"
+  },
+  "exported_artifacts": {
+    "pdf": "%USERPROFILE%\\Downloads\\inference_value_theorem_iclr2027_submission.pdf",
+    "source_zip": "%USERPROFILE%\\Downloads\\inference_value_theorem_iclr2027_submission_source.zip"
+  },
+  "evidence_files": [
+    "results/du_aligned/du_experiment_results.json",
+    "results/du_aligned/du_experiment_summary.txt",
+    "results/du_aligned/paper_claims_status.md",
+    "results/du_aligned/live_judge_score_summary.json",
+    "results/du_aligned/adaptive_allocation_summary.json",
+    "results/benchmarks/cross_benchmark_summary.json",
+    "results/maxed_out/claim_gate_report.md",
+    "results/maxed_out/heldout_forecasting/tables/heldout_locked_estimator_summary.csv",
+    "results/maxed_out/heldout_forecasting/measurements/3B/problem_118.json"
+  ],
+  "claim_policy": {
+    "do_claim": [
+      "exact finite empirical selector law",
+      "AUC/kappa is complete for N=2 and insufficient for higher N",
+      "23-model theorem-aligned exact-law validation",
+      "five-model expanded finite-pilot sample-complexity evidence",
+      "scoped 119-record 4096-depth 3B/MATH held-out slice",
+      "scoped live-judge subset",
+      "four pilot-scale cross-benchmark families",
+      "adaptive allocation evidence"
+    ],
+    "do_not_claim_yet": [
+      "full maxed-out manifest completion",
+      "universal 23-model 4096-depth held-out coverage",
+      "broad live-judge superiority",
+      "six-family manifest-scale benchmark generality",
+      "tiny-pilot sufficiency"
+    ]
+  }
+}

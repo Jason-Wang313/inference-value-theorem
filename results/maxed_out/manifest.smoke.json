@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "campaign": "maxed_out_inference_value_theorem",
+  "smoke": true,
+  "created_utc": "2026-05-29T12:07:04+00:00",
+  "repo": {
+    "path": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github",
+    "commit": "b1fc0594692d13304c9619bfa21c7697f18fed46",
+    "branch": "main",
+    "status_short": "M README.md\n M docs/CODEX_HANDOFF.md\n M experiments/16_cross_benchmark.py\n?? experiments/17_maxed_out_campaign.py\n?? results/maxed_out/"
+  },
+  "model_panel": {
+    "active_live_models": [
+      "3B",
+      "70B",
+      "8B",
+      "Dracarys70B",
+      "Gemma3n2B",
+      "Gemma3n4B",
+      "Maverick17B",
+      "Ministral14B",
+      "MistralSmall119B",
+      "Mixtral8x7B",
+      "Qwen122B",
+      "Qwen397B",
+      "QwenNext80B",
+      "Stockmark100B",
+      "Super120B",
+      "Super49B"
+    ],
+    "historically_measured_models": [
+      "3B",
+      "70B",
+      "8B",
+      "Dracarys70B",
+      "GLM5",
+      "Gemma3n2B",
+      "Gemma3n4B",
+      "KimiK2",
+      "Maverick17B",
+      "MiniMax",
+      "Ministral14B",
+      "MistralLarge675B",
+      "MistralNemotron",
+      "MistralSmall119B",
+      "Mixtral8x22B",
+      "Mixtral8x7B",
+      "Qwen122B",
+      "Qwen397B",
+      "QwenNext80B",
+      "Stockmark100B",
+      "Super120B",
+      "Super49B",
+      "Ultra253B"
+    ],
+    "inactive_historical_models": [
+      "GLM5",
+      "KimiK2",
+      "MiniMax",
+      "MistralLarge675B",
+      "MistralNemotron",
+      "Mixtral8x22B",
+      "Ultra253B"
+    ],
+    "new_active_models_without_baseline_measurements": []
+  },
+  "target_models": [
+    "3B",
+    "70B"
+  ],
+  "live_collection_models": [
+    "3B",
+    "70B"
+  ],
+  "inactive_target_models": [],
+  "policy": {
+    "do_not_claim_inactive_models_as_new_live_runs": true,
+    "oracle_scores_are_diagnostic_upper_bounds_only": true,
+    "livecodebench_code_scope_default": "public",
+    "all_full_runs_must_use_this_manifest": true
+  },
+  "heldout_forecasting": {
+    "math_problems": 3,
+    "samples_per_problem": 8,
+    "split": {
+      "pilot": 4,
+      "calibration": 2,
+      "evaluation": 2
+    },
+    "K_values": [
+      1,
+      2,
+      4
+    ],
+    "N_values": [
+      1,
+      2,
+      4
+    ],
+    "estimators": [
+      "raw_plugin",
+      "pooled",
+      "hierarchical_shrinkage",
+      "tail_smoothed_moment",
+      "oracle_full_distribution"
+    ],
+    "target_response_count": 48,
+    "measurement_dir": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\heldout_forecasting\\measurements"
+  },
+  "real_verifier": {
+    "math_problems": 3,
+    "responses_per_problem": 4,
+    "judge_labels": [
+      "judge_a",
+      "judge_b",
+      "judge_c"
+    ],
+    "V_values": [
+      1,
+      2,
+      3,
+      5
+    ],
+    "N_values": [
+      1,
+      2,
+      4
+    ],
+    "score_functions": [
+      "mean_logprob",
+      "total_logprob",
+      "length_normalized_logprob",
+      "learned_verifier",
+      "judge_a",
+      "judge_b",
+      "judge_c",
+      "judge_ensemble",
+      "logprob_plus_judge_ensemble",
+      "oracle_correctness_upper_bound"
+    ],
+    "target_response_count": 24,
+    "target_judgment_count": 72,
+    "live_collection_response_count": 24,
+    "live_collection_judgment_count": 72,
+    "manual_audit_target": 5000,
+    "output_dir": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\real_verifier"
+  },
+  "cross_benchmark": {
+    "benchmarks": [
+      "math500",
+      "gpqa_diamond"
+    ],
+    "models": [
+      "3B",
+      "70B"
+    ],
+    "tasks_per_benchmark": 3,
+    "samples_per_task": 4,
+    "N_values": [
+      1,
+      2,
+      4
+    ],
+    "target_response_count": 48,
+    "supported_existing_runner_benchmarks": [
+      "math500",
+      "gpqa_diamond"
+    ],
+    "supported_existing_runner_response_count": 48,
+    "output_dir": "C:\\Users\\wangz\\Downloads\\inference-value-theorem-github\\results\\maxed_out\\cross_benchmark"
+  },
+  "commands": {
+    "prepare": "python experiments/17_maxed_out_campaign.py prepare",
+    "status": "python experiments/17_maxed_out_campaign.py status",
+    "collect_math_example": "python experiments/17_maxed_out_campaign.py collect-math --model 3B --problem-indices 0-9 --target-samples 4096",
+    "measure_math_example": "python experiments/17_maxed_out_campaign.py measure-math --model 3B --problem-indices 0-9 --target-samples 4096",
+    "analyze_heldout_example": "python experiments/17_maxed_out_campaign.py analyze-heldout --models 3B",
+    "cross_benchmark_existing_runner": "python experiments/16_cross_benchmark.py --model-set all --n-tasks 500 --n-samples 128 --collect --measure --analyze --allow-unsafe-code-exec --code-test-scope public"
+  }
+}

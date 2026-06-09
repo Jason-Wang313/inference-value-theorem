@@ -1,0 +1,50 @@
+{"phase": "heldout_collect_math", "model": "3B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model 3B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "3B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model 3B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "3B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models 3B"}
+{"phase": "heldout_collect_math", "model": "70B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model 70B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "70B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model 70B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "70B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models 70B"}
+{"phase": "heldout_collect_math", "model": "8B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model 8B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "8B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model 8B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "8B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models 8B"}
+{"phase": "heldout_collect_math", "model": "Dracarys70B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Dracarys70B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Dracarys70B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Dracarys70B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Dracarys70B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Dracarys70B"}
+{"phase": "heldout_collect_math", "model": "Gemma3n2B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Gemma3n2B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Gemma3n2B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Gemma3n2B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Gemma3n2B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Gemma3n2B"}
+{"phase": "heldout_collect_math", "model": "Gemma3n4B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Gemma3n4B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Gemma3n4B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Gemma3n4B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Gemma3n4B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Gemma3n4B"}
+{"phase": "heldout_collect_math", "model": "Maverick17B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Maverick17B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Maverick17B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Maverick17B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Maverick17B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Maverick17B"}
+{"phase": "heldout_collect_math", "model": "Ministral14B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Ministral14B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Ministral14B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Ministral14B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Ministral14B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Ministral14B"}
+{"phase": "heldout_collect_math", "model": "MistralSmall119B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model MistralSmall119B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "MistralSmall119B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model MistralSmall119B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "MistralSmall119B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models MistralSmall119B"}
+{"phase": "heldout_collect_math", "model": "Mixtral8x7B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Mixtral8x7B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Mixtral8x7B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Mixtral8x7B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Mixtral8x7B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Mixtral8x7B"}
+{"phase": "heldout_collect_math", "model": "Qwen122B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Qwen122B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Qwen122B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Qwen122B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Qwen122B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Qwen122B"}
+{"phase": "heldout_collect_math", "model": "Qwen397B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Qwen397B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Qwen397B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Qwen397B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Qwen397B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Qwen397B"}
+{"phase": "heldout_collect_math", "model": "QwenNext80B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model QwenNext80B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "QwenNext80B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model QwenNext80B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "QwenNext80B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models QwenNext80B"}
+{"phase": "heldout_collect_math", "model": "Stockmark100B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Stockmark100B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Stockmark100B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Stockmark100B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Stockmark100B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Stockmark100B"}
+{"phase": "heldout_collect_math", "model": "Super120B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Super120B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Super120B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Super120B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Super120B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Super120B"}
+{"phase": "heldout_collect_math", "model": "Super49B", "command": "python experiments/17_maxed_out_campaign.py collect-math --model Super49B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_measure_math", "model": "Super49B", "command": "python experiments/17_maxed_out_campaign.py measure-math --model Super49B --n-problems 500 --target-samples 4096"}
+{"phase": "heldout_analyze", "model": "Super49B", "command": "python experiments/17_maxed_out_campaign.py analyze-heldout --models Super49B"}
+{"phase": "real_verifier_seed_manifest", "command": "python experiments/11_model_judge.py --live --models 3B 70B 8B Dracarys70B Gemma3n2B Gemma3n4B Maverick17B Ministral14B MistralSmall119B Mixtral8x7B Qwen122B Qwen397B QwenNext80B Stockmark100B Super120B Super49B --n-problems 500 --max-samples 256 --workers 12 --request-delay 3 --rate-limit-cooldown 90 --max-task-attempts 16 --live-batch-size 8"}
+{"phase": "cross_benchmark_collect_measure_analyze", "command": "python experiments/16_cross_benchmark.py --benchmarks math500 gpqa_diamond ifeval livebench_selected livecodebench humaneval_mbpp --model-set all --n-tasks 500 --n-samples 128 --batch-size 1 --workers 192 --collect --measure --analyze --allow-unsafe-code-exec --code-test-scope public --measure-workers 12"}

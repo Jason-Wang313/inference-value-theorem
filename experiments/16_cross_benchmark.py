@@ -46,6 +46,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from config import MODELS, NIM_API_KEYS, NIM_BASE_URL, RESULTS_DIR  # noqa: E402
 from src.nim_client import compute_score  # noqa: E402
 from src.theorem import compute_f_theoretical  # noqa: E402
+from src.utils import check_correctness  # noqa: E402
 
 
 OUT_DIR = RESULTS_DIR / "benchmarks"
@@ -99,6 +100,15 @@ def build_messages(task: BenchmarkTask) -> list[dict[str, str]]:
             "You are an expert competitive programmer. Return only the final Python 3 program. "
             "Use stdin/stdout unless the prompt explicitly provides starter code."
         )
+    elif task.benchmark in {"mbpp", "humaneval_mbpp"}:
+        system = (
+            "You are an expert Python programmer. Return only the final Python code. "
+            "Define the requested function and avoid prose outside the code."
+        )
+    elif task.benchmark == "math500":
+        system = (
+            "Solve the math problem. Show your work step by step. Put your final answer in \\boxed{}."
+        )
     elif task.benchmark == "gpqa_diamond":
         system = (
             "Answer the multiple-choice science question. Think briefly, then end with "
@@ -129,6 +139,36 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
             if line:
                 rows.append(json.loads(line))
     return rows
+
+
+def load_math500_benchmark(limit: int | None) -> list[BenchmarkTask]:
+    path = PROJECT_ROOT / "data" / "math500.jsonl"
+    tasks = []
+    with path.open(encoding="utf-8") as f:
+        for i, line in enumerate(f):
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
+            if "problem" not in row or "answer" not in row:
+                continue
+            tasks.append(
+                BenchmarkTask(
+                    benchmark="math500",
+                    task_id=str(row.get("unique_id", row.get("id", i))),
+                    prompt=str(row["problem"]),
+                    grader_type="math_boxed",
+                    answer=str(row["answer"]),
+                    metadata={
+                        "source": "local:data/math500.jsonl",
+                        "level": row.get("level"),
+                        "type": row.get("type"),
+                    },
+                )
+            )
+            if limit and len(tasks) >= limit:
+                break
+    return tasks
 
 
 def load_livecodebench(limit: int | None) -> list[BenchmarkTask]:
@@ -169,6 +209,63 @@ def load_livecodebench(limit: int | None) -> list[BenchmarkTask]:
         )
     tasks.sort(key=lambda t: (str(t.metadata.get("difficulty") or ""), t.task_id))
     return tasks[:limit] if limit else tasks
+
+
+def load_mbpp(limit: int | None, benchmark_name: str = "mbpp") -> list[BenchmarkTask]:
+    last_error = None
+    dataset = None
+    source = None
+    for spec in [
+        ("google-research-datasets/mbpp", "sanitized", "test"),
+        ("google-research-datasets/mbpp", None, "test"),
+        ("mbpp", "sanitized", "test"),
+        ("mbpp", None, "test"),
+    ]:
+        repo_id, config_name, split = spec
+        try:
+            if config_name:
+                loaded = load_dataset(repo_id, config_name)
+            else:
+                loaded = load_dataset(repo_id)
+            dataset = loaded[split] if split in loaded else loaded[list(loaded.keys())[0]]
+            source = f"{repo_id}:{config_name or 'default'}:{split}"
+            break
+        except Exception as exc:
+            last_error = exc
+            continue
+    if dataset is None:
+        raise RuntimeError(f"Could not load MBPP dataset; last error={last_error}")
+
+    tasks = []
+    for i, row in enumerate(dataset):
+        tests = row.get("test_list") or row.get("tests") or []
+        if isinstance(tests, str):
+            try:
+                tests = json.loads(tests)
+            except json.JSONDecodeError:
+                tests = [line.strip() for line in tests.splitlines() if line.strip()]
+        prompt = (
+            "Write a Python function that satisfies the following task.\n\n"
+            f"{row.get('text', row.get('prompt', ''))}\n\n"
+            "Return only the Python code. The code will be checked against unit tests."
+        )
+        tasks.append(
+            BenchmarkTask(
+                benchmark=benchmark_name,
+                task_id=str(row.get("task_id", row.get("id", i))),
+                prompt=prompt,
+                grader_type="mbpp_tests",
+                answer={
+                    "tests": tests,
+                    "test_setup_code": row.get("test_setup_code", ""),
+                    "canonical_code": row.get("code", ""),
+                },
+                metadata={"source": source},
+            )
+        )
+        if limit and len(tasks) >= limit:
+            break
+    return tasks
 
 
 def load_gpqa_diamond(limit: int | None) -> list[BenchmarkTask]:
@@ -263,8 +360,14 @@ def load_livebench_selected(limit: int | None) -> list[BenchmarkTask]:
 
 
 def load_tasks(benchmark: str, limit: int | None) -> list[BenchmarkTask]:
+    if benchmark == "math500":
+        return load_math500_benchmark(limit)
     if benchmark == "livecodebench":
         return load_livecodebench(limit)
+    if benchmark == "mbpp":
+        return load_mbpp(limit, benchmark_name="mbpp")
+    if benchmark == "humaneval_mbpp":
+        return load_mbpp(limit, benchmark_name="humaneval_mbpp")
     if benchmark == "gpqa_diamond":
         return load_gpqa_diamond(limit)
     if benchmark == "ifeval":
@@ -449,6 +552,38 @@ def grade_python_tests(
     return True
 
 
+def grade_mbpp_tests(response: str, answer: dict[str, Any], allow_exec: bool) -> bool | None:
+    if not allow_exec:
+        return None
+    tests = answer.get("tests") or []
+    if isinstance(tests, str):
+        tests = [line.strip() for line in tests.splitlines() if line.strip()]
+    tests = [str(test).strip() for test in tests if str(test).strip()]
+    if not tests:
+        return None
+    code = extract_code(response)
+    setup = str(answer.get("test_setup_code", "") or "")
+    harness = "\n\n".join([setup, code, *tests])
+    with tempfile.TemporaryDirectory() as td:
+        script = Path(td) / "mbpp_runner.py"
+        script.write_text(harness, encoding="utf-8")
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script)],
+                text=True,
+                capture_output=True,
+                timeout=max(3, min(20, len(tests) + 3)),
+            )
+        except subprocess.TimeoutExpired:
+            return False
+        return proc.returncode == 0
+
+
+def grade_math_boxed(response: str, answer: str) -> bool:
+    correct, _ = check_correctness(response, answer)
+    return bool(correct)
+
+
 def extract_answer_text(response: str) -> str:
     boxed = re.findall(r"\\boxed\{([^{}]+)\}", response)
     if boxed:
@@ -568,6 +703,10 @@ def grade_response(
 ) -> bool | None:
     if task.grader_type == "python_public_tests":
         return grade_python_tests(response, task.answer, allow_code_exec, code_test_scope)
+    if task.grader_type == "mbpp_tests":
+        return grade_mbpp_tests(response, task.answer, allow_exec=allow_code_exec)
+    if task.grader_type == "math_boxed":
+        return grade_math_boxed(response, str(task.answer))
     if task.grader_type == "multiple_choice_letter":
         return grade_multiple_choice(response, str(task.answer))
     if task.grader_type == "ifeval":
@@ -831,6 +970,9 @@ def analyze_benchmark(
     models: list[str],
     n_values: list[int],
     expected_records: int | None = None,
+    requested_task_limit: int | None = None,
+    requested_tasks: int | None = None,
+    requested_samples: int | None = None,
 ) -> dict[str, Any]:
     rows = []
     pair_rows = []
@@ -881,8 +1023,17 @@ def analyze_benchmark(
     summary = {
         "benchmark": benchmark,
         "models": models,
+        "requested_task_limit": int(requested_task_limit) if requested_task_limit is not None else None,
+        "requested_tasks": int(requested_tasks) if requested_tasks is not None else None,
+        "requested_samples_per_task": int(requested_samples) if requested_samples is not None else None,
         "expected_records": int(expected_records) if expected_records is not None else None,
         "measurement_records": int(len(pair_rows)),
+        "observed_model_count": int(pair_df["model"].nunique()) if not pair_df.empty else 0,
+        "observed_task_count": int(pair_df["task_id"].nunique()) if not pair_df.empty else 0,
+        "min_samples_per_record": int(pair_df["n"].min()) if not pair_df.empty else 0,
+        "median_samples_per_record": float(pair_df["n"].median()) if not pair_df.empty else 0.0,
+        "max_samples_per_record": int(pair_df["n"].max()) if not pair_df.empty else 0,
+        "max_N_evaluated": int(df["N"].max()) if not df.empty else 0,
         "nondegenerate_records": int(pair_df["nondegenerate"].sum()) if not pair_df.empty else 0,
         "grading_coverage_records": int(len(pair_rows)),
         "grading_coverage_rate": float(len(pair_rows) / expected_records) if expected_records else None,
@@ -917,8 +1068,16 @@ def write_cross_summary(summaries: list[dict[str, Any]]) -> None:
         rows.append(
             {
                 "benchmark": s["benchmark"],
+                "requested_task_limit": s.get("requested_task_limit"),
+                "requested_tasks": s.get("requested_tasks"),
+                "requested_samples_per_task": s.get("requested_samples_per_task"),
                 "expected_records": s.get("expected_records"),
                 "measurement_records": s["measurement_records"],
+                "observed_model_count": s.get("observed_model_count"),
+                "observed_task_count": s.get("observed_task_count"),
+                "min_samples_per_record": s.get("min_samples_per_record"),
+                "max_samples_per_record": s.get("max_samples_per_record"),
+                "max_N_evaluated": s.get("max_N_evaluated"),
                 "nondegenerate_records": s["nondegenerate_records"],
                 "grading_coverage_rate": s.get("grading_coverage_rate"),
                 "mean_exact_law_mae": s["mean_exact_law_mae"],
@@ -954,7 +1113,7 @@ def main() -> None:
     parser.add_argument(
         "--benchmarks",
         nargs="+",
-        default=["livecodebench", "gpqa_diamond", "ifeval", "livebench_selected"],
+        default=["math500", "gpqa_diamond", "ifeval", "livebench_selected", "livecodebench", "humaneval_mbpp"],
     )
     parser.add_argument("--model-set", choices=["smoke", "pilot", "all", "custom"], default="smoke")
     parser.add_argument("--models", nargs="*", default=None)
@@ -1027,7 +1186,15 @@ def main() -> None:
             )
         if args.analyze:
             print("Analyzing...")
-            summary = analyze_benchmark(benchmark, models, n_values, expected_records=len(tasks) * len(models))
+            summary = analyze_benchmark(
+                benchmark,
+                models,
+                n_values,
+                expected_records=len(tasks) * len(models),
+                requested_task_limit=args.n_tasks,
+                requested_tasks=len(tasks),
+                requested_samples=args.n_samples,
+            )
             print(summary)
             summaries.append(summary)
     if summaries:
