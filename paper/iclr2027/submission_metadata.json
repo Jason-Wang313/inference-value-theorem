@@ -1,9 +1,9 @@
 {
   "paper": {
-    "title": "The Inference Value Theorem: Exact Finite-Sample Laws for Best-of-N Selection",
+    "title": "When Pairwise Ranking Fails: Score-Rank Evaluation for Multi-Sample Language Models",
     "target": "ICLR 2027 anonymous review",
     "created_date": "2026-06-09",
-    "scope": "submission-ready draft from current verified artifacts only"
+    "scope": "submission-ready v2 draft from current verified artifacts only; framed as an LLM response-pool evaluation paper, not an architecture paper"
   },
   "template": {
     "status": "provisional",
@@ -15,8 +15,8 @@
     "provisional_change": "running header year changed from 2026 to 2027"
   },
   "exported_artifacts": {
-    "pdf": "%USERPROFILE%\\Downloads\\inference_value_theorem_iclr2027_submission.pdf",
-    "source_zip": "%USERPROFILE%\\Downloads\\inference_value_theorem_iclr2027_submission_source.zip"
+    "pdf": "%USERPROFILE%\\OneDrive\\Desktop\\best-of-n-llm-v2.pdf",
+    "source_zip": "%USERPROFILE%\\Downloads\\best-of-n-llm-v2-source.zip"
   },
   "evidence_files": [
     "results/du_aligned/du_experiment_results.json",
@@ -31,14 +31,15 @@
   ],
   "claim_policy": {
     "do_claim": [
-      "exact finite empirical selector law",
+      "exact finite problem-conditional score-rank law for LLM response-pool selection",
       "AUC/kappa is complete for N=2 and insufficient for higher N",
-      "23-model theorem-aligned exact-law validation",
+      "23-model response-pool exact-law validation",
       "five-model expanded finite-pilot sample-complexity evidence",
       "scoped 119-record 4096-depth 3B/MATH held-out slice",
       "scoped live-judge subset",
       "four pilot-scale cross-benchmark families",
-      "adaptive allocation evidence"
+      "adaptive allocation evidence",
+      "explicit boundary excluding architecture-specific world-model, planning, robotics, diffusion, retrieval, JEPA, CEM/MCTS, and control claims"
     ],
     "do_not_claim_yet": [
       "full maxed-out manifest completion",

@@ -9,8 +9,9 @@
 \usepackage{microtype}
 \usepackage{url}
 \usepackage{enumitem}
+\usepackage{array}
 
-\title{The Inference Value Theorem: Exact Finite-Sample Laws for Best-of-N Selection}
+\title{When Pairwise Ranking Fails: Score-Rank Evaluation for Multi-Sample Language Models}
 
 \author{Anonymous Authors}
 
@@ -20,96 +21,119 @@
 \newcommand{\ind}{\mathbf{1}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Kappa}{\kappa}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-Best-of-$N$ sampling is a standard way to improve language-model accuracy:
-generate multiple candidate responses, score them, and return the highest
-scoring candidate. Its behavior is often summarized by pairwise score metrics
-such as AUC, but pairwise separation does not determine high-$N$ performance.
-We derive an exact finite empirical law for best-of-$N$ selection under any
-scalar score with random tie-breaking. The law shows that expected
-best-of-$N$ accuracy is governed by the conditional score-rank moment
-structure; AUC/kappa is the complete special case only for $N=2$. We validate
-the law across a 23-model theorem-aligned bundle, where the exact-law
-prediction attains mean absolute error (MAE) $6.22\times 10^{-4}$ and the
-moment predictor is exact up to $7.44\times 10^{-18}$. We further report
-finite-pilot forecasting, learned-verifier and live-judge scores, four
-pilot-scale cross-benchmark families, adaptive allocation, and a scoped
-119-record 4096-sample held-out MATH slice. The evidence supports the
-theorem's empirical relevance while explicitly leaving manifest-scale
-held-out coverage, six-family benchmark coverage, and broad live-judge
-generality as future work.
+Language-model systems increasingly choose one answer from a pool of sampled
+candidate responses, using log probabilities, learned verifiers, reward
+models, or LLM judges as selectors. These systems are often evaluated with
+pairwise score metrics such as AUC, but pairwise separation does not determine
+the accuracy obtained when the system may draw many candidates and return the
+highest-scoring one. We study this as an LLM response-pool evaluation problem.
+For any finite problem-conditioned response pool, scalar score, and uniform
+tie-breaking rule, we derive an exact score-rank law for the expected
+correctness of the selected response. The law shows that AUC/kappa is complete
+only for two draws; higher draw counts depend on the conditional score-rank
+moment structure. We validate the law across a 23-model response-pool bundle,
+where the exact-law prediction attains mean absolute error (MAE)
+$6.22\times 10^{-4}$ and the moment predictor is exact up to
+$7.44\times 10^{-18}$. We further report finite-pilot forecasting,
+learned-verifier and live-judge scores, four pilot-scale cross-benchmark
+families, adaptive allocation, and a scoped 119-record 4096-sample held-out
+MATH slice. The paper makes no architecture-specific claim about world models,
+planning, robotics, diffusion, retrieval, or control; its contribution is a
+score-rank evaluation law and a gated evidence package for language-model
+response pools.
 \end{abstract}
 
 \section{Introduction}
 
-Best-of-$N$ inference converts additional sampling into accuracy by selecting
-one response from a set of candidates. The same template underlies verifier
-reranking, reward-model selection, LLM-as-a-judge scoring, and likelihood
-reranking \citep{cobbe2021training,zheng2023judging}. The practical question
-is not only whether a score is better than random pairwise ranking. It is how
-that score changes the entire best-of-$N$ curve as $N$ grows.
+Multi-sample inference is now routine in language-model systems. A model may
+sample several candidate answers, attach a scalar score to each answer, and
+return the response with the largest score. The score can be the model's own
+mean log probability, a trained verifier, a reward model, a heuristic, or a
+separate LLM judge \citep{cobbe2021training,zheng2023judging}. The natural
+evaluation question is not simply whether the score ranks correct responses
+above incorrect responses in pairwise comparisons. It is how much accuracy the
+score buys when the system is allowed to draw $N$ candidates from the same
+problem-conditioned pool.
 
-The common pairwise answer is AUC. AUC is meaningful: for best-of-two
-selection, it is exactly the right summary once the base correctness rate is
-known. For $N>2$, however, it discards where correct responses lie in the
-score-rank distribution. Two scorers can have the same pairwise AUC and
-different high-$N$ behavior if one places a few correct responses at the very
-top while the other spreads correct responses through the middle ranks.
+The common pairwise answer is AUC. AUC is meaningful: for two candidate draws,
+it is exactly the right ranking summary once the base correctness rate is
+known. For larger candidate pools, however, AUC discards where correct
+responses sit in the score ordering. Two scores can have the same pairwise AUC
+and sharply different high-$N$ behavior if one score concentrates a small
+number of correct answers at the very top while the other spreads correct
+answers through the middle ranks. This failure mode is invisible to pairwise
+evaluation but decisive for multi-sample selection.
 
-This paper gives a finite-sample answer. For any fixed problem, finite
-response pool, scalar score, and random tie-breaking rule, expected
-best-of-$N$ accuracy is an exact order-statistic functional of the empirical
-score-label distribution. The formula is not asymptotic and does not assume a
-particular score family. It applies equally to log probability, learned
-verifier scores, calibrated posteriors, live judge scores, heuristic scores,
-and oracle diagnostic scores.
+This paper gives a finite, problem-conditional answer for LLM response pools.
+For a fixed benchmark item, a finite set of sampled responses, binary
+correctness labels, a scalar score, and random tie-breaking, the expected
+accuracy of selecting the highest-scoring response is an exact
+order-statistic functional of the empirical score-label distribution. The
+formula is not asymptotic and does not assume a calibrated score family. It
+applies equally to log probability, learned verifier scores, live judge
+scores, heuristic scores, and oracle diagnostic scores, because the only
+objects it uses are scores, labels, ranks, and ties inside one response pool.
 
-The empirical contribution is deliberately scoped. We validate the theorem and
-its moment hierarchy across 23 models, then test whether the same law is
+\paragraph{Boundary against duplicate architecture papers.}
+The scope is intentionally narrow. This is not a world-model paper, a robot
+planning paper, a diffusion-policy paper, a trajectory-transformer paper, a
+retrieval paper, a simulator paper, a JEPA paper, a CEM/MCTS paper, or an
+object-centric control paper. It does not claim that a particular architecture
+creates, fixes, or exploits the score-rank effect. Architecture-specific
+papers should treat the law here as a diagnostic lens or baseline and must add
+their own domain mechanism, failure mode, and evidence. The identity of this
+paper is the evaluation of language-model response pools.
+
+The empirical contribution is therefore gated around that identity. We
+validate the score-rank law and its moment hierarchy across 23 language-model
+response-pool directories, then test whether the same evaluation law remains
 useful for finite-pilot forecasting, verifier-style reranking, live judge
 scores, cross-benchmark pilots, and adaptive allocation. We do not claim that
 the current artifacts complete a full maxed-out manifest. The strongest
-supported claim is theorem-first: best-of-$N$ evaluation should report the
-score-rank moment structure, not only AUC.
+supported claim is evaluation-first: multi-sample LLM selection should report
+conditional score-rank moments, not only pairwise AUC.
 
 \paragraph{Contributions.}
-We make four contributions. (1) We derive an exact finite empirical selector
-law for best-of-$N$ selection with arbitrary scalar scores and random
-tie-breaking. (2) We show that AUC/kappa is complete for $N=2$ and
-insufficient for higher $N$, where rank-interval moments are necessary.
-(3) We validate the law on a 23-model theorem-aligned bundle with exact-law
-MAE $0.000622$ and moment-hierarchy error at floating-point scale. (4) We
-report scoped evidence for finite pilots, learned and live judge scores,
-cross-benchmark task broadening, adaptive allocation, and a 119-record
+We make four contributions. (1) We formalize multi-sample LLM response
+selection as a finite response-pool evaluation problem. (2) We derive an exact
+problem-conditional score-rank law for arbitrary scalar scores and uniform
+tie-breaking, and show that AUC/kappa is complete for $N=2$ but insufficient
+for higher $N$. (3) We validate the law on a 23-model response-pool bundle
+with exact-law MAE $0.000622$ and moment-hierarchy error at floating-point
+scale. (4) We report scoped evidence for finite pilots, learned and live judge
+scores, cross-benchmark task broadening, adaptive allocation, and a 119-record
 4096-depth held-out MATH slice, while separating passed gates from missing
 manifest-scale gates.
 
-\section{Setup}
+\section{LLM Response-Pool Setup}
 
-Fix one problem and a finite empirical response pool of size $n$. Response
-$i$ has correctness label $Y_i\in\{0,1\}$ and scalar score $S_i$. Let
-$p=n^{-1}\sum_i Y_i$ be the empirical base correctness rate. Best-of-$N$
-draws $N$ candidates independently with replacement from the empirical pool
-and returns a response with maximum score, breaking top-score ties uniformly
-at random. Let $f_N$ denote the expected correctness of the selected response.
+Fix one benchmark problem and a finite empirical pool of $n$ language-model
+responses. Response $i$ has correctness label $Y_i\in\{0,1\}$ and scalar
+score $S_i$. Let $p=n^{-1}\sum_i Y_i$ be the empirical base correctness rate.
+An $N$-draw selector samples $N$ candidates independently with replacement
+from the empirical pool and returns a response with maximum score, breaking
+top-score ties uniformly at random. Let $f_N$ denote the expected correctness
+of the selected response.
 
 Sampling with replacement matches the experiment simulator and the usual
-interpretation of the empirical pool as a finite distribution over candidate
-draws. The same rank formula can be adapted to without-replacement sampling,
-but that is not the protocol evaluated here.
+interpretation of a response pool as a finite distribution over possible
+candidate draws. The same rank formula can be adapted to without-replacement
+sampling, but that is not the protocol evaluated here.
 
-\section{Exact Selector Law}
+\section{Score-Rank Law}
 
 Sort responses by nondecreasing score. For each tied score group $g$, let
 $[a_g,b_g]$ be its one-indexed rank interval, $k_g=b_g-a_g+1$ its size, and
 $c_g=\sum_{i\in g}Y_i$ the number of correct responses in the group.
 
-\begin{theorem}[Finite empirical best-of-$N$ law]
+\begin{theorem}[Problem-conditional score-rank law]
 \label{thm:selector}
 Under the empirical with-replacement protocol above and uniform random
 tie-breaking among top-score ties,
@@ -142,7 +166,7 @@ $\theta_{N-1}$ is the $(N-1)$st moment of the mixture CDF evaluated at a
 correct response's score. The finite interval form in
 Equation~\ref{eq:selector-law} is the exact version used in the experiments.
 
-\paragraph{AUC is the $N=2$ special case.}
+\paragraph{AUC is the two-draw special case.}
 Let $\Kappa=\Pr(S^+>S^-)+\tfrac{1}{2}\Pr(S^+=S^-)$ be the Mann-Whitney AUC
 with tie handling matched to the selector. For $N=2$,
 \begin{equation}
@@ -154,14 +178,14 @@ and one incorrect response and selecting the correct one. For $N>2$, AUC is
 not sufficient: Equation~\ref{eq:selector-law} depends on higher powers of the
 rank intervals, so high-score tail placement matters.
 
-\section{Empirical Protocol}
+\section{Evaluation Protocol}
 
 All results are computed from repository artifacts generated before this
-manuscript package. The theorem-aligned experiments evaluate
-$N\in\{1,2,4,8,16,32,48\}$ across 23 model directories with up to 500 MATH
-records per model \citep{hendrycks2021math}. The primary score is mean log
-probability unless otherwise stated. We compare the exact empirical
-best-of-$N$ measurement to Equation~\ref{eq:selector-law}.
+manuscript package. The core experiments evaluate
+$N\in\{1,2,4,8,16,32,48\}$ across 23 language-model directories with up to
+500 MATH records per model \citep{hendrycks2021math}. The primary score is
+mean log probability unless otherwise stated. We compare the exact empirical
+measurement of $N$-draw selection to Equation~\ref{eq:selector-law}.
 
 For finite-pilot experiments, pilot samples estimate the score-rank law and
 held-out response pools evaluate predictions. Learned verifiers use
@@ -172,12 +196,12 @@ completed subsets. A claim-gate report records which ideal gates pass and
 which remain missing; no partial raw-cache record is counted as held-out
 evidence.
 
-\section{Theorem-Aligned Results}
+\section{Core Response-Pool Results}
 
 \begin{table}[t]
 \centering
-\caption{Core theorem-aligned evidence. The exact law is problem-conditional;
-pooling heterogeneous problems destroys the conditional structure.}
+\caption{Core response-pool evidence. The exact law is problem-conditional;
+pooling heterogeneous problems destroys the conditional score-rank structure.}
 \label{tab:core}
 \begin{tabular}{l r}
 \toprule
@@ -193,11 +217,12 @@ Pooled MAE & 0.122364 \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:core} shows the main theorem validation. The exact selector law
-predicts the measured best-of-$N$ curve with overall MAE $0.000622$ across
-35,964 model/problem/$N$ triples. The pooled baseline is much worse because
-best-of-$N$ selection depends on the within-problem score-label distribution;
-pooling across heterogeneous problems discards that conditioning.
+Table~\ref{tab:core} shows the main validation. The exact score-rank law
+predicts the measured multi-sample selection curve with overall MAE
+$0.000622$ across 35,964 model/problem/$N$ triples. The pooled baseline is
+much worse because selection depends on the within-problem score-label
+distribution; pooling across heterogeneous problems discards that
+conditioning.
 
 \begin{figure}[t]
 \centering
@@ -212,7 +237,7 @@ curve. It is exact at $N=2$, as Equation~\ref{eq:n2} predicts, but the
 AUC-only MAE grows from $0.0158$ at $N=3$ to $0.0821$ at $N=48$. The moment
 predictor remains exact up to numerical error, with maximum observed MAE
 $7.44\times10^{-18}$. This is the central empirical message: high-$N$
-best-of-$N$ evaluation is a moment problem, not a pairwise-summary problem.
+response-pool evaluation is a moment problem, not a pairwise-summary problem.
 
 \section{Estimation and Scoped Extensions}
 
@@ -249,7 +274,7 @@ not presented as a deployable finite-pilot estimator. Problem 119 has only
 \caption{Scoped extensions. All rows are paper-facing only at the stated
 scale; maximum-scope generality remains limited by missing gates.}
 \label{tab:extensions}
-\begin{tabular}{p{0.31\linewidth}p{0.28\linewidth}p{0.29\linewidth}}
+\begin{tabular}{L{0.31\linewidth}L{0.28\linewidth}L{0.29\linewidth}}
 \toprule
 Evidence & Scale & Main result \\
 \midrule
@@ -283,11 +308,11 @@ achieved deployment policy.
 \caption{Current claim-gate status. Passed gates support scoped wording;
 missing gates are explicitly excluded from the main claims.}
 \label{tab:gates}
-\begin{tabular}{p{0.48\linewidth}p{0.16\linewidth}p{0.23\linewidth}}
+\begin{tabular}{L{0.45\linewidth}L{0.13\linewidth}L{0.30\linewidth}}
 \toprule
 Claim or gate & Status & Evidence scale \\
 \midrule
-Core exact-law MAE and moment exactness & PASS & 23-model theorem bundle \\
+Core exact-law MAE and moment exactness & PASS & 23-model response-pool bundle \\
 Held-out $K=128/256/512,N=8$ diagnostic rows & PASS & 119 3B/MATH records \\
 Live judge delta over logprob & PASS & 135 completed pairs \\
 Cross-benchmark exact-law coverage & PASS & 4 pilot families \\
@@ -310,13 +335,14 @@ adaptive allocation is directionally useful but not globally optimal.
 
 \section{Conclusion}
 
-Best-of-$N$ selection has an exact finite empirical law. This law explains why
-AUC/kappa is exact for $N=2$ but insufficient for larger candidate sets, where
-score-rank moment structure controls performance. The current evidence
-validates the theorem across a broad theorem-aligned bundle and shows scoped
-utility for pilots, verifiers, judges, benchmark broadening, and allocation.
-The next empirical step is scale, not a new theorem: complete the missing
-manifest gates while preserving the same conditional, rank-based evaluation.
+Multi-sample language-model selection has an exact finite response-pool law.
+The law explains why AUC/kappa is exact for two draws but insufficient for
+larger candidate sets, where conditional score-rank moment structure controls
+performance. The current evidence validates the law across a broad
+language-model response-pool bundle and shows scoped utility for pilots,
+verifiers, judges, benchmark broadening, and allocation. The next empirical
+step is scale, not a new framing wrapper: complete the missing manifest gates
+while preserving the same conditional, rank-based evaluation.
 
 \section*{Reproducibility Statement}
 All paper-facing numbers are traceable to artifacts under

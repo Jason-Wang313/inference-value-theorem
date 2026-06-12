@@ -5,9 +5,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$Downloads = [Environment]::GetFolderPath("UserProfile") + "\Downloads"
-$PdfOut = Join-Path $Downloads "inference_value_theorem_iclr2027_submission.pdf"
-$ZipOut = Join-Path $Downloads "inference_value_theorem_iclr2027_submission_source.zip"
+$UserProfile = [Environment]::GetFolderPath("UserProfile")
+$Downloads = Join-Path $UserProfile "Downloads"
+$OneDriveDesktop = Join-Path $UserProfile "OneDrive\Desktop"
+$Desktop = if (Test-Path $OneDriveDesktop) { $OneDriveDesktop } else { [Environment]::GetFolderPath("Desktop") }
+$PdfOut = Join-Path $Desktop "best-of-n-llm-v2.pdf"
+$ZipOut = Join-Path $Downloads "best-of-n-llm-v2-source.zip"
 
 Push-Location $Root
 try {

@@ -1,17 +1,32 @@
 # Codex Handoff
 
 ## 1. Current Goal
-Execute the maxed-out experiment plan by adding a locked, resumable campaign layer on top of the existing evidence package.
+Maintain the `best-of-n-llm` paper package as the LLM response-pool
+score-rank evaluation paper, not as a duplicate architecture wrapper. The v2
+paper source is in `paper/iclr2027/`, the v2 review audit is
+`docs/BEST_OF_N_LLM_V2_REVIEW_AUDIT.md`, and the build script exports the
+versioned Desktop artifact `best-of-n-llm-v2.pdf`.
 
-Current status: maxed-out campaign orchestration is implemented locally, and full-scale held-out collection has started. 119 contiguous 3B/MATH records are complete at 4096 samples (`problem_0` through `problem_118`). The newest measured record, `problem_118`, has `p=0.0732421875` (300 correct out of 4096), `kappa=0.5267746750965929`, level `5`, and ground truth `81`. A stopped partial top-off run left `problem_119` at `3152/4096` valid raw-cache samples; it is not a measured record yet. The remaining maxed-out claim gates still require broad manifest-scale coverage. A scoped manuscript writing plan now exists at `docs/PAPER_WRITING_PLAN.md`, and the first working draft is `docs/MANUSCRIPT_DRAFT.md`; use these to write now without claiming full maxed-out completion.
+Current evidence status: maxed-out campaign orchestration is implemented
+locally, and full-scale held-out collection has started. 119 contiguous
+3B/MATH records are complete at 4096 samples (`problem_0` through
+`problem_118`). A stopped partial top-off run left `problem_119` at
+`3152/4096` valid raw-cache samples; it is not a measured record yet. The
+remaining maxed-out claim gates still require broad manifest-scale coverage.
+The manuscript must keep these gates scoped until the missing coverage passes.
 
 ## 2. Important Repo Facts
-- Repository path: `C:\Users\wangz\Downloads\inference-value-theorem-github`.
-- GitHub remote: `https://github.com/Jason-Wang313/inference-value-theorem.git`.
-- Last verified evidence commit before this handoff setup: `d598e6391 Add paper closure experiments and cross-benchmark validation`.
+- Repository path: `C:\Users\wangz\Downloads\best-of-n-llm`.
+- GitHub remote: `https://github.com/Jason-Wang313/best-of-n-llm.git`.
+- Desktop source-map entry: `C:\Users\wangz\OneDrive\Desktop\best-of-n-llm.pdf`
+  maps to this folder and repo; v2 builds to
+  `C:\Users\wangz\OneDrive\Desktop\best-of-n-llm-v2.pdf`.
+- Last verified evidence commit before the v2 rewrite:
+  `e09f980ee Add ICLR paper draft and submission package`.
 - This repo contains experiment code, results, figures, tables, and claim-status docs.
-- No manuscript `.tex` file was found in this repo during the last inspection.
-- Separate manuscript-like files exist under `C:\Users\wangz\MIRROR\paper`, but that is a different repo (`https://github.com/Jason-Wang313/Mirror.git`) and was last observed on branch `submission-v39`.
+- The active manuscript source is `paper/iclr2027/main.tex`.
+- The v2 title is `When Pairwise Ranking Fails: Score-Rank Evaluation for
+  Multi-Sample Language Models`.
 - API keys are not committed. `config.py` can read `NIM_API_KEYS` or fall back to `C:\Users\wangz\MIRROR\.env` without printing key material.
 - `src/nim_client.py` can fall back to `C:\Users\wangz\Downloads\inference-value-theorem\data\raw` when this checkout's `data/raw` is empty.
 

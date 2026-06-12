@@ -1,7 +1,9 @@
-# Inference Value Theorem Experiments
+# Score-Rank Evaluation for Multi-Sample Language Models
 
-This repository contains the empirical artifacts and experiment runners for
-the corrected Theorem 1 best-of-N selector audit.
+This repository contains the empirical artifacts, experiment runners, and
+ICLR-targeted manuscript package for the LLM response-pool score-rank
+evaluation paper. The paper-facing draft is in `paper/iclr2027/` and is
+framed as language-model selection evaluation, not as an architecture paper.
 
 ## Du-aligned experiments
 

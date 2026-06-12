@@ -2,11 +2,12 @@
 
 This directory contains the anonymous ICLR-targeted manuscript source for:
 
-`The Inference Value Theorem: Exact Finite-Sample Laws for Best-of-N Selection`
+`When Pairwise Ranking Fails: Score-Rank Evaluation for Multi-Sample Language Models`
 
-The manuscript is scoped to verified artifacts in this repository. It should
-not be edited to claim full maxed-out manifest completion until the missing
-claim gates in `results/maxed_out/claim_gate_report.md` pass.
+The manuscript is scoped to verified artifacts in this repository and is
+framed as an LLM response-pool evaluation paper, not an architecture paper. It
+should not be edited to claim full maxed-out manifest completion until the
+missing claim gates in `results/maxed_out/claim_gate_report.md` pass.
 
 ## Template Status
 
@@ -31,8 +32,8 @@ From this directory:
 
 Expected exported artifacts:
 
-- `%USERPROFILE%\Downloads\inference_value_theorem_iclr2027_submission.pdf`
-- `%USERPROFILE%\Downloads\inference_value_theorem_iclr2027_submission_source.zip`
+- `%USERPROFILE%\OneDrive\Desktop\best-of-n-llm-v2.pdf`
+- `%USERPROFILE%\Downloads\best-of-n-llm-v2-source.zip`
 
 ## Evidence Sources
 
@@ -50,10 +51,14 @@ Primary artifact inputs:
 
 Main claim boundary:
 
-- Supported: exact finite empirical law, AUC/kappa insufficiency for high
-  `N`, 23-model theorem validation, five-model finite-pilot curves, scoped
-  119-record 4096-depth 3B/MATH held-out slice, scoped live judge subset,
-  four pilot-scale cross-benchmark families, and adaptive allocation.
+- Supported: exact finite problem-conditional score-rank law for LLM
+  response-pool selection, AUC/kappa insufficiency for high `N`, 23-model
+  response-pool validation, five-model finite-pilot curves, scoped 119-record
+  4096-depth 3B/MATH held-out slice, scoped live judge subset, four
+  pilot-scale cross-benchmark families, and adaptive allocation.
 - Not supported yet: full 23-model held-out MATH manifest, six-family
   manifest-scale benchmark coverage, broad live-judge superiority, or
   tiny-pilot sufficiency.
+- Out of scope: architecture-specific claims about world models, planning,
+  robotics, diffusion policies, retrieval systems, JEPA, CEM/MCTS, simulators,
+  object-centric control, or trajectory transformers.
