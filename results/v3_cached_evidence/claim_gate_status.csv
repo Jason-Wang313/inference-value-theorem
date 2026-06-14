@@ -1,0 +1,15 @@
+name,category,claim_blocking,status,value,threshold,requirement
+core_exact_law_mae,claim,True,PASS,0.0006223688355332208,<= 0.001,Full-estimate exact-law validation must be near numerical precision.
+moment_hierarchy_exactness,claim,True,PASS,7.44110972799246e-18,<= 1e-9,Moment-law prediction should be exact up to floating-point error when using the full empirical distribution.
+expanded_pilot_proxy_K128_N8,diagnostic,False,WARN,0.04014398587894077,<= 0.03,"Existing 256-sample proxy is diagnostic pre-flight evidence for the pilot-forecasting target, not final proof."
+expanded_pilot_proxy_K256_N8,diagnostic,False,INFO,,<= 0.02,"Existing 256-sample proxy is diagnostic pre-flight evidence for the pilot-forecasting target, not final proof."
+maxed_heldout_coverage,claim,True,MISSING,"{""incomplete"": {""3B"": {""issues"": [""records_at_target<500""], ""live"": true, ""max_samples_per_record"": 4096, ""records_any_depth"": 119, ""records_at_target"": 119}, ""70B"": {""issues"": [""records_at_target<500""], ""live"": true,...",all target model/problem records measured at manifest sample depth,"The maximum held-out forecasting claim requires complete manifest-scale coverage, not one deep record."
+maxed_heldout_K128_N8,claim,True,PASS,0.005639141465438472,<= 0.03,Maxed-out held-out forecasting must hit the paper's sample-complexity gate on independent evaluation.
+maxed_heldout_K256_N8,claim,True,PASS,0.005639141465438472,<= 0.02,Maxed-out held-out forecasting must hit the paper's sample-complexity gate on independent evaluation.
+maxed_heldout_K512_N8,claim,True,PASS,0.005639141465438472,<= 0.015,Maxed-out held-out forecasting must hit the paper's sample-complexity gate on independent evaluation.
+live_judge_delta_over_logprob,claim,True,PASS,0.06444006895093203,>= 0.03,A real judge/verifier should beat mean logprob by at least +0.03 at high N.
+maxed_live_judge_coverage,claim,True,MISSING,135,>= 8000,Maxed-out live-judge claim needs complete model/problem coverage for the live panel.
+cross_benchmark_exact_law,claim,True,PASS,"{""coverage"": [1.0, 1.0, 1.0, 1.0], ""mae"": [0.0, 0.0, 0.0, 0.0]}",MAE <= 0.005 and coverage=1.0,Every completed benchmark should hit the exact-law MAE and grading-coverage gate.
+cross_benchmark_family_count,claim,True,MISSING,"{""completed"": 4, ""missing"": [""math500"", ""humaneval_mbpp""]}",>= 6,The maximum generalization claim needs at least six benchmark families.
+maxed_cross_benchmark_scale,claim,True,MISSING,"{""complete"": [], ""incomplete"": {""gpqa_diamond"": {""grading_coverage_rate"": 1.0, ""issues"": [""requested_task_limit<500"", ""requested_samples_per_task<128"", ""max_samples_per_record<128"", ""max_N_evaluated<128""], ""max_N_eval...","6 families at manifest task limit, sample depth, model count, and 100% measured coverage","The maximum cross-benchmark claim requires the manifest-scale run, not smoke-scale family presence."
+adaptive_allocation_delta,claim,True,PASS,0.012464669900157044,> 0,Moment-law allocation should beat uniform under fixed budget.

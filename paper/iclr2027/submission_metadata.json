@@ -3,7 +3,7 @@
     "title": "When Pairwise Ranking Fails: Score-Rank Evaluation for Multi-Sample Language Models",
     "target": "ICLR 2027 anonymous review",
     "created_date": "2026-06-09",
-    "scope": "submission-ready v2 draft from current verified artifacts only; framed as an LLM response-pool evaluation paper, not an architecture paper"
+    "scope": "submission-ready v3 draft from verified cached evidence; framed as an LLM response-pool evaluation paper, not an architecture paper"
   },
   "template": {
     "status": "provisional",
@@ -15,8 +15,8 @@
     "provisional_change": "running header year changed from 2026 to 2027"
   },
   "exported_artifacts": {
-    "pdf": "%USERPROFILE%\\OneDrive\\Desktop\\best-of-n-llm-v2.pdf",
-    "source_zip": "%USERPROFILE%\\Downloads\\best-of-n-llm-v2-source.zip"
+    "pdf": "%USERPROFILE%\\OneDrive\\Desktop\\best-of-n-llm-v3.pdf",
+    "source_zip": "%USERPROFILE%\\Downloads\\best-of-n-llm-v3-source.zip"
   },
   "evidence_files": [
     "results/du_aligned/du_experiment_results.json",
@@ -27,7 +27,8 @@
     "results/benchmarks/cross_benchmark_summary.json",
     "results/maxed_out/claim_gate_report.md",
     "results/maxed_out/heldout_forecasting/tables/heldout_locked_estimator_summary.csv",
-    "results/maxed_out/heldout_forecasting/measurements/3B/problem_118.json"
+    "results/maxed_out/heldout_forecasting/measurements/3B/problem_118.json",
+    "results/v3_cached_evidence/summary.json"
   ],
   "claim_policy": {
     "do_claim": [

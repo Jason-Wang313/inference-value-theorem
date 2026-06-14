@@ -2,10 +2,10 @@
 
 ## 1. Current Goal
 Maintain the `best-of-n-llm` paper package as the LLM response-pool
-score-rank evaluation paper, not as a duplicate architecture wrapper. The v2
-paper source is in `paper/iclr2027/`, the v2 review audit is
-`docs/BEST_OF_N_LLM_V2_REVIEW_AUDIT.md`, and the build script exports the
-versioned Desktop artifact `best-of-n-llm-v2.pdf`.
+score-rank evaluation paper, not as a duplicate architecture wrapper. The v3
+paper source is in `paper/iclr2027/`, the v3 review audit is
+`docs/BEST_OF_N_LLM_V3_REVIEW_AUDIT.md`, and the build script exports the
+versioned Desktop artifact `best-of-n-llm-v3.pdf`.
 
 Current evidence status: maxed-out campaign orchestration is implemented
 locally, and full-scale held-out collection has started. 119 contiguous
@@ -18,14 +18,14 @@ The manuscript must keep these gates scoped until the missing coverage passes.
 ## 2. Important Repo Facts
 - Repository path: `C:\Users\wangz\Downloads\best-of-n-llm`.
 - GitHub remote: `https://github.com/Jason-Wang313/best-of-n-llm.git`.
-- Desktop source-map entry: `C:\Users\wangz\OneDrive\Desktop\best-of-n-llm.pdf`
-  maps to this folder and repo; v2 builds to
-  `C:\Users\wangz\OneDrive\Desktop\best-of-n-llm-v2.pdf`.
+- Desktop source-map entry: `C:\Users\wangz\OneDrive\Desktop\best-of-n-llm-v3.pdf`
+  maps to this folder and repo; v3 builds to
+  `C:\Users\wangz\OneDrive\Desktop\best-of-n-llm-v3.pdf`.
 - Last verified evidence commit before the v2 rewrite:
   `e09f980ee Add ICLR paper draft and submission package`.
 - This repo contains experiment code, results, figures, tables, and claim-status docs.
 - The active manuscript source is `paper/iclr2027/main.tex`.
-- The v2 title is `When Pairwise Ranking Fails: Score-Rank Evaluation for
+- The v3 title is `When Pairwise Ranking Fails: Score-Rank Evaluation for
   Multi-Sample Language Models`.
 - API keys are not committed. `config.py` can read `NIM_API_KEYS` or fall back to `C:\Users\wangz\MIRROR\.env` without printing key material.
 - `src/nim_client.py` can fall back to `C:\Users\wangz\Downloads\inference-value-theorem\data\raw` when this checkout's `data/raw` is empty.

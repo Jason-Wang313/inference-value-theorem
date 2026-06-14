@@ -1,0 +1,66 @@
+{
+  "allocation": {
+    "auc_acc": 0.6358993627095487,
+    "auc_delta_over_uniform": 0.013289386356273414,
+    "moment_acc": 0.6350746462534324,
+    "moment_delta_over_uniform": 0.012464669900157044,
+    "uniform_acc": 0.6226099763532753
+  },
+  "core": {
+    "auc_only_mae_N48": 0.08209840370442219,
+    "exact_law_mae": 0.0006223688355332208,
+    "moment_mae_max": 7.44110972799246e-18,
+    "n2_auc_diff": 1.0880105535741109e-16,
+    "n_triples": 35964,
+    "per_problem_mae": 0.0006015819643820549,
+    "pooled_mae": 0.12236377157597667,
+    "tie_rate": 0.00013413506012950968
+  },
+  "cross_benchmark": {
+    "families": 4,
+    "max_exact_law_mae": 0.0,
+    "mean_gain_N48_over_N1": 0.03650890098901117,
+    "nondegenerate": 818,
+    "records": 1280
+  },
+  "gates": {
+    "all_passed": false,
+    "claim_missing": 4,
+    "claim_pass": 8,
+    "counts": {
+      "INFO": 1,
+      "MISSING": 4,
+      "PASS": 8,
+      "WARN": 1
+    }
+  },
+  "heldout_4096": {
+    "coverage_percent": 1.0347826086956522,
+    "coverage_status": "MISSING",
+    "exact_f256_median": 0.25421856302607626,
+    "k128_n8_mae": 0.0056391414654384,
+    "k512_n256_mae": 0.0253481273928448,
+    "k512_n8_mae": 0.0056391414654384,
+    "kappa_median": 0.5731967471469597,
+    "p_median": 0.34814453125,
+    "p_q10": 0.0019042968750000002,
+    "p_q90": 0.955078125,
+    "records": 119,
+    "records_at_target": 119,
+    "required_records": 11500
+  },
+  "live_judge": {
+    "judgments": 6480,
+    "mean_live_auc": 0.7031844015116667,
+    "mean_logprob_auc": 0.5354580125345308,
+    "n48_delta": 0.06444006895093203,
+    "n48_live_acc": 0.5607869656247887,
+    "n48_logprob_acc": 0.49634689667385673,
+    "pairs": 135
+  },
+  "pilot": {
+    "k128_n8_mae": 0.0336948521332792,
+    "k192_n8_mae": 0.03891765257927242,
+    "models": 5
+  }
+}

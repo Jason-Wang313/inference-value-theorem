@@ -1,0 +1,5 @@
+benchmark,requested_task_limit,requested_tasks,requested_samples_per_task,expected_records,measurement_records,observed_model_count,observed_task_count,min_samples_per_record,max_samples_per_record,max_N_evaluated,nondegenerate_records,grading_coverage_rate,mean_exact_law_mae,mean_p,acc_N1,acc_N48,acc_gain_N48_over_N1,records_per_family
+gpqa_diamond,20,20,48,320,320,16,20,48,48,48,251,1.0,0.0,0.5393229166666667,0.5393229166666667,0.5889771190427251,0.04965420237605844,320
+ifeval,20,20,48,320,320,16,20,48,48,48,164,1.0,0.0,0.7770182291666666,0.7770182291666667,0.7962488769455363,0.019230647778869514,320
+livebench_selected,20,20,48,320,320,16,20,48,48,48,141,1.0,0.0,0.2184244791666666,0.2184244791666666,0.2545868833692246,0.03616240420255798,320
+livecodebench,20,20,48,320,320,16,20,48,48,48,262,1.0,0.0,0.48359375,0.48359375,0.5245820995985587,0.04098834959855874,320

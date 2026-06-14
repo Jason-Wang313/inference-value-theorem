@@ -1,5 +1,5 @@
 """
-Maxed-out campaign orchestrator for the Inference Value Theorem project.
+Maxed-out campaign orchestrator for the LLM response-pool evaluation project.
 
 This script does not assume the 47M-response campaign should be launched by
 accident. It provides locked manifests, resumable MATH collection/measurement,

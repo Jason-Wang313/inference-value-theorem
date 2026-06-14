@@ -5,12 +5,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoRoot = Split-Path -Parent (Split-Path -Parent $Root)
 $UserProfile = [Environment]::GetFolderPath("UserProfile")
 $Downloads = Join-Path $UserProfile "Downloads"
 $OneDriveDesktop = Join-Path $UserProfile "OneDrive\Desktop"
 $Desktop = if (Test-Path $OneDriveDesktop) { $OneDriveDesktop } else { [Environment]::GetFolderPath("Desktop") }
-$PdfOut = Join-Path $Desktop "best-of-n-llm-v2.pdf"
-$ZipOut = Join-Path $Downloads "best-of-n-llm-v2-source.zip"
+$PdfOut = Join-Path $Desktop "best-of-n-llm-v3.pdf"
+$RepoPdfOut = Join-Path $RepoRoot "paper\final\best-of-n-llm-v3.pdf"
+$ZipOut = Join-Path $Downloads "best-of-n-llm-v3-source.zip"
 
 Push-Location $Root
 try {
@@ -29,6 +31,8 @@ try {
         }
     }
 
+    Invoke-Checked "python" @((Join-Path $RepoRoot "experiments\18_v3_cached_evidence.py"))
+
     $latexmkWorks = $false
     $latexmkCmd = Get-Command latexmk -ErrorAction SilentlyContinue
     $perlCmd = Get-Command perl -ErrorAction SilentlyContinue
@@ -42,7 +46,12 @@ try {
         Invoke-Checked "pdflatex" @("-interaction=nonstopmode", "-halt-on-error", "main.tex")
         Invoke-Checked "pdflatex" @("-interaction=nonstopmode", "-halt-on-error", "main.tex")
     }
+    $RepoPdfDir = Split-Path -Parent $RepoPdfOut
+    if (-not (Test-Path $RepoPdfDir)) {
+        New-Item -ItemType Directory -Path $RepoPdfDir | Out-Null
+    }
     Copy-Item -LiteralPath (Join-Path $Root "main.pdf") -Destination $PdfOut -Force
+    Copy-Item -LiteralPath (Join-Path $Root "main.pdf") -Destination $RepoPdfOut -Force
 
     if ($Package) {
         if (Test-Path $ZipOut) {
@@ -67,6 +76,7 @@ try {
     }
 
     Write-Host "PDF: $PdfOut"
+    Write-Host "Repo PDF: $RepoPdfOut"
     if ($Package) {
         Write-Host "Source ZIP: $ZipOut"
     }
