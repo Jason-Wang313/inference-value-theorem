@@ -11,14 +11,19 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DESKTOP = Path.home() / "OneDrive" / "Desktop"
 PAPER_DIR = REPO_ROOT / "paper" / "iclr2027"
-REPO_PDF = REPO_ROOT / "paper" / "final" / "best-of-n-llm-v3.pdf"
-DESKTOP_PDF = DESKTOP / "best-of-n-llm-v3.pdf"
+REPO_PDF = REPO_ROOT / "paper" / "final" / "best-of-n-llm-v4.pdf"
+DESKTOP_PDF = DESKTOP / "best-of-n-llm-v4.pdf"
 SOURCE_MAP = DESKTOP / "PAPER_SOURCE_MAP.md"
-SUMMARY = REPO_ROOT / "results" / "v3_cached_evidence" / "summary.json"
+SUMMARY = REPO_ROOT / "results" / "v4_protocol_evidence" / "summary.json"
 
 STALE_PATTERNS = (
     "best-of-n-llm-" + "v" + "2.pdf",
     "best-of-n-llm-" + "v" + "2-source.zip",
+    "best-of-n-llm-" + "v" + "3.pdf",
+    "best-of-n-llm-" + "v" + "3-source.zip",
+    "18_" + "v" + "3_cached_evidence.py",
+    "results/" + "v" + "3_cached_evidence",
+    "V" + "Three",
     "Inference Value " + "Theorem",
     "inference value " + "theorem",
     "iclr" + "_submission",
@@ -29,6 +34,7 @@ SCAN_ROOTS = (
     REPO_ROOT / "docs",
     REPO_ROOT / "paper" / "iclr2027",
     REPO_ROOT / "scripts",
+    REPO_ROOT / "experiments" / "18_v4_protocol_evidence.py",
 )
 
 
@@ -90,17 +96,18 @@ def audit_pdfs() -> None:
 
 def audit_summary() -> None:
     if not SUMMARY.exists():
-        fail(f"missing v3 summary: {SUMMARY}")
+        fail(f"missing v4 summary: {SUMMARY}")
     summary = json.loads(SUMMARY.read_text(encoding="utf-8"))
     core = summary.get("core", {})
     heldout = summary.get("heldout_4096", {})
     gates = summary.get("gates", {})
     cross = summary.get("cross_benchmark", {})
+    cards = summary.get("benchmark_cards", {})
     live = summary.get("live_judge", {})
     if core.get("n_triples") != 35964:
         fail("unexpected exact-law triple count")
     if float(core.get("exact_law_mae", 1.0)) > 0.001:
-        fail("exact-law MAE exceeds v3 tolerance")
+        fail("exact-law MAE exceeds v4 tolerance")
     if float(core.get("auc_only_mae_N48", 0.0)) < 0.05:
         fail("AUC failure control is too small; high-N distinction may be broken")
     if heldout.get("records") != 119:
@@ -108,7 +115,11 @@ def audit_summary() -> None:
     if int(gates.get("claim_pass", -1)) != 8 or int(gates.get("claim_missing", -1)) != 4:
         fail("claim-gate pass/missing counts changed unexpectedly")
     if int(cross.get("families", 0)) < 4 or int(cross.get("records", 0)) < 1280:
-        fail("cross-benchmark pilot coverage is below v3 expectation")
+        fail("cross-benchmark pilot coverage is below v4 expectation")
+    if int(cards.get("families", 0)) < 5 or int(cards.get("records", 0)) < 1399:
+        fail("benchmark-card ledger is missing MATH plus real benchmark families")
+    if float(cards.get("min_coverage", 0.0)) < 1.0:
+        fail("benchmark-card ledger includes incomplete benchmark coverage")
     if int(live.get("pairs", 0)) != 135 or int(live.get("judgments", 0)) != 6480:
         fail("live-judge scoped subset changed unexpectedly")
 
@@ -134,12 +145,12 @@ def audit_source_map() -> None:
         fail(f"missing Desktop source map: {SOURCE_MAP}")
     text = SOURCE_MAP.read_text(encoding="utf-8")
     expected_parts = (
-        "best-of-n-llm-v3.pdf",
+        "best-of-n-llm-v4.pdf",
         "C:\\Users\\wangz\\Downloads\\best-of-n-llm",
         "Jason-Wang313/best-of-n-llm",
     )
     if not all(part in text for part in expected_parts):
-        fail("Desktop source map does not point best-of-n-llm-v3.pdf to the local folder and GitHub repo")
+        fail("Desktop source map does not point best-of-n-llm-v4.pdf to the local folder and GitHub repo")
 
 
 def audit_latex_log() -> None:
@@ -162,7 +173,7 @@ def main() -> None:
     audit_stale_text()
     audit_source_map()
     audit_latex_log()
-    print("submission audit complete: best-of-n-llm v3")
+    print("submission audit complete: best-of-n-llm v4")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Maxed-Out Campaign Status
 
-- Manifest: `C:\Users\wangz\Downloads\inference-value-theorem-github\results\maxed_out\manifest.json`
+- Manifest: `C:\Users\wangz\Downloads\best-of-n-llm\results\maxed_out\manifest.json`
 - Smoke mode: `False`
 - Created UTC: `2026-05-29T12:07:04+00:00`
 - Repo commit: `b1fc0594692d13304c9619bfa21c7697f18fed46`
@@ -19,7 +19,7 @@
 
 ## Current Maxed-Out Artifacts
 
-- Command queue: `C:\Users\wangz\Downloads\inference-value-theorem-github\results\maxed_out\command_queue.jsonl`
+- Command queue: `C:\Users\wangz\Downloads\best-of-n-llm\results\maxed_out\command_queue.jsonl`
 - Held-out detail table exists: `True`
 - Held-out summary table exists: `True`
 

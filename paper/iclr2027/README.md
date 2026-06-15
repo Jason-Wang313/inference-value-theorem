@@ -32,8 +32,8 @@ From this directory:
 
 Expected exported artifacts:
 
-- `%USERPROFILE%\OneDrive\Desktop\best-of-n-llm-v3.pdf`
-- `%USERPROFILE%\Downloads\best-of-n-llm-v3-source.zip`
+- `%USERPROFILE%\OneDrive\Desktop\best-of-n-llm-v4.pdf`
+- `%USERPROFILE%\Downloads\best-of-n-llm-v4-source.zip`
 
 ## Evidence Sources
 
@@ -48,7 +48,7 @@ Primary artifact inputs:
 - `results/maxed_out/claim_gate_report.md`
 - `results/maxed_out/heldout_forecasting/tables/heldout_locked_estimator_summary.csv`
 - `results/maxed_out/heldout_forecasting/measurements/3B/problem_118.json`
-- `results/v3_cached_evidence/summary.json`
+- `results/v4_protocol_evidence/summary.json`
 
 Main claim boundary:
 
@@ -64,14 +64,14 @@ Main claim boundary:
   robotics, diffusion policies, retrieval systems, JEPA, CEM/MCTS, simulators,
   object-centric control, or trajectory transformers.
 
-## V3 Audit
+## v4 protocol audit
 
 After building, run:
 
 ```powershell
-python ..\..\scripts\run_v3_claim_audit.py
+python ..\..\scripts\run_v4_claim_audit.py
 ```
 
 The audit checks the 25-page submission threshold, repo/Desktop PDF hash
-agreement, v3 evidence summary, missing-gate disclosure, stale v2/title text,
+agreement, v4 evidence summary, missing-gate disclosure, stale v2/title text,
 LaTeX blocking warnings, and the Desktop source-map row.

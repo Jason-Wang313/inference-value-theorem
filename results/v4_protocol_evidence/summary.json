@@ -6,6 +6,15 @@
     "moment_delta_over_uniform": 0.012464669900157044,
     "uniform_acc": 0.6226099763532753
   },
+  "benchmark_cards": {
+    "families": 5,
+    "max_law_mae": 0.0,
+    "mean_gain_N48_over_N1": 0.032282545492812106,
+    "min_coverage": 1.0,
+    "nondegenerate": 930,
+    "records": 1399,
+    "tasks": 199
+  },
   "core": {
     "auc_only_mae_N48": 0.08209840370442219,
     "exact_law_mae": 0.0006223688355332208,

@@ -157,27 +157,27 @@ The incomplete raw-cache frontier is 3B/MATH problem 119 with 3152/4096 valid
 raw-cache samples at the time of the handoff. It is not measured at target
 depth and is not counted in any held-out metric.
 
-\section{V3 Artifact Trace}
-\label{app:v3-trace}
+\section{v4 Artifact Trace}
+\label{app:v4-trace}
 
-The v3 manuscript adds an explicit cached-evidence layer. The layer exists
+The v4 manuscript adds an explicit protocol-evidence layer. The layer exists
 because the repository contains both completed evidence and ambitious
 unfinished campaign plans. A reviewer should not need to infer which is which
 from scattered logs. The script
-\path{experiments/18_v3_cached_evidence.py} reads the checked-in artifacts and
-writes a smaller audit ledger under \path{results/v3_cached_evidence/}. The
+\path{experiments/18_v4_protocol_evidence.py} reads the checked-in artifacts and
+writes a smaller audit ledger under \path{results/v4_protocol_evidence/}. The
 ledger contains summary JSON, compact CSV tables, and five figures copied into
 the paper source directory.
 
 \begin{table}[t]
 \centering
-\caption{V3 cached-evidence outputs and their intended review use.}
-\label{tab:v3-artifact-trace}
+\caption{v4 protocol-evidence outputs and their intended review use.}
+\label{tab:v4-artifact-trace}
 \begin{tabular}{L{0.32\linewidth}L{0.56\linewidth}}
 \toprule
 Artifact & Review use \\
 \midrule
-\path{summary.json} & Machine-readable source for all v3 macro values used in
+\path{summary.json} & Machine-readable source for all v4 macro values used in
 the paper. \\
 \path{heldout_slice_records.csv} & One row per 4096-depth 3B/MATH record,
 including base accuracy, AUC/kappa, and exact selected accuracies up to
@@ -188,6 +188,8 @@ completed slice spans near-zero, medium, and near-solved problems. \\
 and missing claim gates. \\
 \path{cross_benchmark_delta.csv} & Per-family pilot-scale gain from $N=1$ to
 $N=48$. \\
+\path{benchmark_cards.csv} & Frozen benchmark-card ledger covering MATH 500,
+GPQA Diamond, IFEval, LiveBench selected, and LiveCodeBench. \\
 \path{expanded_pilot_by_k_n.csv} & Five-model pilot forecasting error averaged
 over models, pilot sizes, and selection budgets. \\
 \path{moment_auc_gap_by_n.csv} & AUC-only versus score-rank moment error by
@@ -204,29 +206,29 @@ an audit index. Each value in the table is derived from earlier result files:
 \path{results/du_aligned/adaptive_allocation_summary.json},
 \path{results/benchmarks/cross_benchmark_summary.csv}, and
 \path{results/maxed_out/claim_gate_report.json}. If any of those files change,
-the v3 script should be rerun before the PDF is rebuilt.
+the v4 protocol script should be rerun before the PDF is rebuilt.
 
 \section{Held-Out Slice Interpretation}
 \label{app:heldout-interpretation}
 
 The 4096-depth slice is useful because it measures full response pools rather
 than relying on shallow pilots. It is also dangerous rhetorically because it is
-easy to overread. The completed slice covers \VThreeHeldoutRecords{} records
+easy to overread. The completed slice covers \EvidenceHeldoutRecords{} records
 from a single model family and benchmark family. It is a strong stress test for
 the theorem and for the locked estimator machinery, but it is not the full
-\VThreeHeldoutRequiredRecords{}-record manifest. The paper therefore uses the
+\EvidenceHeldoutRequiredRecords{}-record manifest. The paper therefore uses the
 slice to make diagnostic claims and refuses to use it as full coverage.
 
 The distribution of base accuracy matters. If all completed records were easy,
 then high selected accuracy at large $N$ would say little. If all were
-impossible, then failures at high $N$ would also say little. The v3 audit shows
-that the median base accuracy is \VThreeHeldoutPMedian{}, with a 10th
-percentile of \VThreeHeldoutPQTen{} and a 90th percentile of
-\VThreeHeldoutPQNinety{}. This spread gives the slice useful diagnostic
+impossible, then failures at high $N$ would also say little. The v4 protocol audit shows
+that the median base accuracy is \EvidenceHeldoutPMedian{}, with a 10th
+percentile of \EvidenceHeldoutPQTen{} and a 90th percentile of
+\EvidenceHeldoutPQNinety{}. This spread gives the slice useful diagnostic
 coverage across very hard, middle, and easy regimes.
 
 The high-$N$ behavior is also informative. The median exact selected accuracy
-at $N=256$ is \VThreeHeldoutFTwoFiveSixMedian{}. That number is not simply the median
+at $N=256$ is \EvidenceHeldoutFTwoFiveSixMedian{}. That number is not simply the median
 base accuracy pushed upward. It reflects the rank placement of correct
 responses under the score. Some problems improve sharply with more samples;
 others saturate or even expose weak score tails. This is the same mechanism
@@ -245,7 +247,7 @@ multiple responses for the same problem, not arbitrary responses across the
 benchmark.
 
 The gap is large. The exact problem-conditional law has MAE
-\VThreeCoreMAE{}, while the pooled baseline has MAE \VThreePooledMAE{}. This
+\EvidenceCoreMAE{}, while the pooled baseline has MAE \EvidencePooledMAE{}. This
 does not mean the theorem is complicated. It means the conditioning is not
 optional. A score can separate easy-problem responses from hard-problem
 responses while doing little useful ordering inside a hard problem. A pooled
@@ -275,9 +277,9 @@ responses at the highest ranks. AUC can look mediocre while high-$N$ selection
 is strong. Both cases are invisible if the evaluation only reports pairwise
 separation.
 
-The v3 audit quantifies this difference. AUC-only MAE reaches
-\VThreeAucNFortyEightMAE{} at $N=48$, while the score-rank moment predictor is
-accurate up to \VThreeMomentMaxMAE{}. The lesson is not that AUC is useless.
+The v4 protocol audit quantifies this difference. AUC-only MAE reaches
+\EvidenceAucNFortyEightMAE{} at $N=48$, while the score-rank moment predictor is
+accurate up to \EvidenceMomentMaxMAE{}. The lesson is not that AUC is useless.
 The lesson is that it answers the wrong question for response-pool selection
 once $N>2$.
 
@@ -287,7 +289,7 @@ once $N>2$.
 The main leakage risk is using final held-out responses to design the
 estimator or choose a reporting threshold. The repository's gate policy
 separates pilot, calibration, and evaluation roles for the maxed-out campaign.
-The v3 paper keeps that separation visible. It reports the locked diagnostic
+The v4 paper keeps that separation visible. It reports the locked diagnostic
 rows and names the selection source. It does not tune an estimator on the
 119-record held-out slice and then claim independent deployment performance.
 
@@ -295,9 +297,9 @@ The learned-verifier and live-judge rows have different risks. Learned
 verifiers must use problem-level splits so that responses from the same problem
 do not leak between train and test. Live judges must be scoped to the judged
 subset and cannot imply broad judge superiority until the planned coverage
-gate is complete. The paper therefore reports \VThreeLiveJudgePairs{} completed
-model/problem pairs and \VThreeLiveJudgeJudgments{} judgments, with $N=48$
-accuracy \VThreeLiveJudgeNFortyEight{} versus \VThreeLogprobNFortyEight{} for mean log
+gate is complete. The paper therefore reports \EvidenceLiveJudgePairs{} completed
+model/problem pairs and \EvidenceLiveJudgeJudgments{} judgments, with $N=48$
+accuracy \EvidenceLiveJudgeNFortyEight{} versus \EvidenceLogprobNFortyEight{} for mean log
 probability on the same pairs.
 
 Calibration is useful but not magical. A calibrated score can improve
@@ -313,15 +315,15 @@ ranks and tied intervals rather than assuming a calibrated probability model.
 The cross-benchmark evidence is useful because it shows that the exact law is
 not tied to one benchmark parser. The completed pilot families are GPQA
 Diamond, IFEval, LiveBench selected, and LiveCodeBench. They total
-\VThreeCrossRecords{} measured model/task records, with
-\VThreeCrossNondegenerate{} nondegenerate records and exact-law MAE
-\VThreeCrossMaxMAE{}. The mean gain from $N=1$ to $N=48$ is
-\VThreeCrossMeanGain{}.
+\EvidenceCrossRecords{} measured model/task records, with
+\EvidenceCrossNondegenerate{} nondegenerate records and exact-law MAE
+\EvidenceCrossMaxMAE{}. The mean gain from $N=1$ to $N=48$ is
+\EvidenceCrossMeanGain{}.
 
 The same evidence is not enough for a manifest-scale benchmark claim. Each
 completed family currently uses 20 tasks and 48 samples per model/task. The
 planned maximum claim would require six families, 500 requested tasks where
-available, 128 samples per task, and full live-model coverage. The v3 paper
+available, 128 samples per task, and full live-model coverage. The v4 paper
 therefore calls these rows pilot-scale. A reviewer may still value the breadth,
 but the missing MATH500 and MBPP-backed family gates remain disclosed.
 
@@ -330,8 +332,8 @@ but the missing MATH500 and MBPP-backed family gates remain disclosed.
 
 Adaptive allocation asks whether response-pool estimates can guide where to
 spend inference budget. In the expanded-pilot setting, the moment-law policy
-improves over uniform by \VThreeMomentDelta{}, while the AUC/kappa policy
-improves over uniform by \VThreeAucDelta{}. The improvement is positive but
+improves over uniform by \EvidenceMomentDelta{}, while the AUC/kappa policy
+improves over uniform by \EvidenceAucDelta{}. The improvement is positive but
 modest. The oracle remains higher because it has access to information that a
 deployable policy does not have.
 
@@ -352,7 +354,7 @@ uniform tie-breaking protocol.
 \item AUC/kappa is complete for the two-draw case and insufficient for high
 draw counts.
 \item The exact law matches checked-in response-pool artifacts with MAE
-\VThreeCoreMAE{} across \VThreeTriples{} triples.
+\EvidenceCoreMAE{} across \EvidenceTriples{} triples.
 \item The same rank law applies to different scalar scores, including
 log-probability, learned verifier scores, and live judge scores, when those
 scores are evaluated on the same response pools.
@@ -393,15 +395,15 @@ main table, appendix, and gate figure.
 \item Is sampling with replacement stated? Yes.
 \item Is without-replacement selection kept out of scope? Yes.
 \item Are pooled baselines explained? Yes.
-\item Are numeric claims traceable? Yes, through the evidence manifest and v3
+\item Are numeric claims traceable? Yes, through the evidence manifest and v4
 ledger.
-\item Does the v3 script call APIs? No.
-\item Does the v3 script produce paper macros? Yes.
+\item Does the v4 protocol script call APIs? No.
+\item Does the v4 protocol script produce paper macros? Yes.
 \item Are figures regenerated from checked-in artifacts? Yes.
 \item Could a reviewer reproduce the core theorem? Yes, from
 \path{src/theorem.py}.
-\item Could a reviewer reproduce the v3 audit? Yes, by running
-\path{experiments/18_v3_cached_evidence.py}.
+\item Could a reviewer reproduce the v4 protocol audit? Yes, by running
+\path{experiments/18_v4_protocol_evidence.py}.
 \item Does the paper use old generic theorem-title language? No.
 \item Does it need a new domain mechanism like the architecture papers? No; its
 domain is LLM response-pool evaluation.
@@ -423,8 +425,8 @@ reproducibility material.
 \item Does it explain why problem conditioning matters? Yes.
 \item Does it preserve anonymous submission style? Yes.
 \item Does it include LLM assistance disclosure? Yes.
-\item Does the v3 build write a Desktop PDF? Yes.
-\item Does the v3 build write a repo final PDF? Yes.
+\item Does the v4 build write a Desktop PDF? Yes.
+\item Does the v4 build write a repo final PDF? Yes.
 \item Does the claim audit require at least 25 pages? Yes.
 \item Does the paper include enough experimental surface? Yes: law validation,
 moment hierarchy, pilots, verifier/judge scores, benchmark pilots, allocation,
@@ -437,7 +439,7 @@ Yes.
 \item Would that attack invalidate the theorem? No.
 \item Would it invalidate scoped empirical claims? No, as long as wording stays
 scoped.
-\item Does the artifact resist stale filename confusion? The v3 build and
+\item Does the artifact resist stale filename confusion? The v4 build and
 Desktop source map are required to do so.
 \item Does it read differently beside architecture papers? Yes.
 \item Is the strongest honest claim crisp? Yes: high-$N$ LLM selection needs
@@ -448,13 +450,13 @@ conditional score-rank evaluation, not only pairwise AUC.
 \label{app:reviewer-repro}
 
 A minimal local reproduction has four steps. First, run
-\path{python -m py_compile config.py experiments\15_paper_claims_status.py experiments\16_cross_benchmark.py experiments\18_v3_cached_evidence.py}
+\path{python -m py_compile config.py experiments\15_paper_claims_status.py experiments\16_cross_benchmark.py experiments\18_v4_protocol_evidence.py}
 to check the main scripts parse. Second, run
-\path{python experiments\18_v3_cached_evidence.py}. This regenerates the v3
+\path{python experiments\18_v4_protocol_evidence.py}. This regenerates the v4
 ledger, macros, and figures without API calls. Third, build the paper from
-\path{paper/iclr2027} with \path{.\build.ps1 -Clean}. Fourth, run the v3 claim
-audit. The audit checks for stale v2 names, missing v3 artifacts, insufficient
-page count, missing v3 ledger, and undisclosed missing gates.
+\path{paper/iclr2027} with \path{.\build.ps1 -Clean}. Fourth, run the v4 claim
+audit. The audit checks for stale v2 names, missing v4 artifacts, insufficient
+page count, missing v4 ledger, and undisclosed missing gates.
 
 This reproduction path is deliberately smaller than the full collection
 pipeline. The full pipeline includes live model sampling, judge calls, code
@@ -498,7 +500,7 @@ produce confusing mismatches between measured and predicted selection curves.
 The fourth requirement is to report the evaluated draw counts. A paper that
 validates $N\leq 8$ cannot automatically claim behavior at $N=128$. High-$N$
 selection magnifies the top score tail, and the top score tail is exactly
-where pairwise summaries can fail. The v3 audit therefore reports both
+where pairwise summaries can fail. The v4 protocol audit therefore reports both
 moderate draw counts and larger diagnostic draw counts on the 4096-depth slice.
 
 \section{Exact-Law Implementation Audit}
@@ -521,7 +523,7 @@ simulation noise as theorem error makes the validation weaker than necessary.
 The repository guards against these bugs in several ways. The theorem
 implementation is in \path{src/theorem.py}. The Du-aligned experiment checks
 the exact law against empirical measurement over many model/problem/$N$ triples.
-The v3 script recomputes exact curves from the 4096-depth held-out records and
+The v4 protocol script recomputes exact curves from the 4096-depth held-out records and
 writes the resulting per-record selected accuracies. The $N=2$ closed form is
 also a useful unit test: it must match the general score-rank law up to
 floating-point precision when AUC/kappa uses the same tie convention.
@@ -534,7 +536,7 @@ $(1/4)^2\cdot0 + ((2/4)^2-(1/4)^2)\cdot1 +
 is exactly what the code applies at scale, with tied groups replacing single
 responses when scores are equal.
 
-\section{High-$N$ Tail Taxonomy}
+\section[High-N Tail Taxonomy]{High-$N$ Tail Taxonomy}
 \label{app:tail-taxonomy}
 
 High-$N$ failures are tail failures. The selector does not care about the
@@ -580,15 +582,15 @@ The manifest is not treated as complete merely because it exists. Its purpose
 is to lock targets, command queues, splits, and gates so that future evidence
 cannot be redefined after seeing results.
 
-The held-out MATH manifest target is \VThreeHeldoutRequiredRecords{} records:
+The held-out MATH manifest target is \EvidenceHeldoutRequiredRecords{} records:
 23 models, 500 problems, and 4096 measured samples per model/problem record.
-The current v3 paper has \VThreeHeldoutRecords{} records at target depth,
-which is \VThreeHeldoutCoveragePct{} of the manifest. This is why the
+The current v4 paper has \EvidenceHeldoutRecords{} records at target depth,
+which is \EvidenceHeldoutCoveragePct{} of the manifest. This is why the
 coverage gate remains missing. The missing gate is not a bug in the audit. It
 is the audit doing its job.
 
 The live-judge manifest target is also not complete. The completed subset has
-\VThreeLiveJudgePairs{} model/problem pairs and \VThreeLiveJudgeJudgments{}
+\EvidenceLiveJudgePairs{} model/problem pairs and \EvidenceLiveJudgeJudgments{}
 judgments. This is enough to show that a live judge score can be attached to a
 response pool and evaluated by the same law. It is not enough to claim broad
 judge superiority across all live-runnable models and problems.
@@ -596,7 +598,7 @@ judge superiority across all live-runnable models and problems.
 The cross-benchmark manifest is similarly larger than the pilot evidence. The
 completed families are useful for checking whether the exact law survives
 different graders and task formats. They do not certify six-family
-manifest-scale generality. The v3 paper therefore uses the phrase
+manifest-scale generality. The v4 paper therefore uses the phrase
 ``pilot-scale'' consistently for these results.
 
 \section{Result Interpretation By Evidence Tier}
@@ -613,7 +615,7 @@ the score arrays exist.
 Tier 3 is forecasting from finite pilots. This tier is useful but weaker
 because it estimates an unknown response-pool distribution from a small sample.
 The expanded-pilot curve improves from small $K$ to larger $K$, but the curve
-does not prove that tiny pilots are always enough. The v3 paper reports the
+does not prove that tiny pilots are always enough. The v4 paper reports the
 curve as sample-complexity evidence, not as a universal stopping rule.
 
 Tier 4 is adaptive allocation. Allocation uses estimated response-pool
@@ -630,7 +632,7 @@ the roadmap and so that future versions cannot quietly lower the standard.
 \section{Duplicate-Risk Firewall}
 \label{app:duplicate-firewall}
 
-The user-level concern that motivated this v3 pass is real: a stack of papers
+The user-level concern that motivated this v4 pass is real: a stack of papers
 with similar titles, first theorems, and wrapper contributions can look like
 template reuse even when the code differs. This paper must therefore have a
 clear identity when placed beside architecture papers.
@@ -653,7 +655,7 @@ The manuscript also avoids duplicate cues. The title does not use the repo
 name. The abstract names pairwise ranking, score-rank moments, LLM response
 pools, and gated evidence. The introduction contains an explicit boundary
 against architecture claims. The conclusion says the next step is scale, not a
-new wrapper. The v3 appendix documents this firewall so a future edit does not
+new wrapper. The v4 appendix documents this firewall so a future edit does not
 accidentally collapse the paper back into a generic template.
 
 \section{Reviewer Objection Ledger}
@@ -674,7 +676,7 @@ states this in the abstract, main text, gate table, gate figure, and appendix.
 The submitted claim is scoped to completed evidence.
 
 Objection: the live judge subset is too small. Response: it is a scoped subset
-with \VThreeLiveJudgePairs{} model/problem pairs. It supports score portability
+with \EvidenceLiveJudgePairs{} model/problem pairs. It supports score portability
 and a local improvement over log probability on the same pairs; it does not
 support broad judge superiority.
 
@@ -696,9 +698,9 @@ more information.
 \section{Data Governance And Non-Fabrication}
 \label{app:data-governance}
 
-The v3 package follows a strict data governance rule: no result value may be
+The v4 package follows a strict data governance rule: no result value may be
 invented in the manuscript. Numbers must come from checked-in artifacts,
-generated v3 summaries, or command output. If an artifact is absent, the paper
+generated v4 summaries, or command output. If an artifact is absent, the paper
 must say the corresponding claim is missing rather than filling the gap with
 optimistic prose.
 
@@ -709,9 +711,9 @@ confuse these categories. A planned target is not an empirical result. A raw
 cache below target depth is not a measured held-out record. A missing benchmark
 family is not covered by analogy to another family.
 
-The v3 audit script helps enforce this rule by producing a compact summary
+The v4 protocol audit script helps enforce this rule by producing a compact summary
 from existing artifacts. The claim audit to be run after the build checks that
-the v3 ledger exists, the final PDFs exist, stale v2 filenames do not appear
+the v4 ledger exists, the final PDFs exist, stale v2 filenames do not appear
 in the paper package, and the manuscript discloses missing gates. This does
 not prove every scientific judgment is correct, but it blocks the most common
 artifact-level failures.
@@ -721,15 +723,15 @@ artifact-level failures.
 
 Before submission, the following checks should pass:
 \begin{enumerate}[leftmargin=*]
-\item The v3 cached-evidence script runs without network access.
+\item The v4 protocol-evidence script runs without network access.
 \item The generated macros are included by the paper source.
 \item The paper builds to a repository PDF and a visible Desktop PDF named
-\path{best-of-n-llm-v3.pdf}.
+\path{best-of-n-llm-v4.pdf}.
 \item The PDF has at least 25 pages of substantive content.
 \item The LaTeX log has no undefined references, citation warnings, fatal
 errors, emergency stops, or overfull boxes.
-\item The v3 claim audit passes.
-\item The source map points the Desktop v3 PDF to the local folder and GitHub
+\item The v4 claim audit passes.
+\item The source map points the Desktop v4 PDF to the local folder and GitHub
 repo.
 \item The GitHub remote head matches the local commit.
 \item Stale names such as the old v2 Desktop artifact do not appear in the
@@ -809,7 +811,7 @@ sample depth.
 The missing MATH500 and humaneval/MBPP-backed family gates are therefore not
 cosmetic. They mark real missing evidence. A stronger future paper would run
 the six-family command queue at the target task and sample scale, then rerun
-the same v3 audit with updated artifacts.
+the same v4 protocol audit with updated artifacts.
 
 \section{Estimator Selection Audit}
 \label{app:estimator-selection}
@@ -818,7 +820,7 @@ Estimator selection is a subtle source of accidental overclaiming. If many
 forecasting estimators are tried on the final held-out set, the best one can
 look better than it really is. The maxed-out campaign avoids this by using
 pilot and calibration data for estimator choice, then evaluating locked rows.
-The v3 paper preserves that distinction and reports the selection source in
+The v4 paper preserves that distinction and reports the selection source in
 the held-out tables.
 
 The current locked diagnostic rows use an oracle full-distribution estimator
@@ -838,25 +840,25 @@ looks encouraging.
 The right interpretation is layered. Exact-law validation is complete for the
 available full response pools. Forecasting from small pilots is promising but
 sample-limited. Locked 4096-depth diagnostics show that the measurement system
-works on \VThreeHeldoutRecords{} records. Full manifest forecasting remains
+works on \EvidenceHeldoutRecords{} records. Full manifest forecasting remains
 unfinished until coverage is complete.
 
 \section{Artifact Failure Modes And Mitigations}
 \label{app:artifact-failures}
 
 Artifact failure mode 1: stale PDF. A repository can have an improved
-manuscript while the visible Desktop PDF remains an old build. The v3 build
+manuscript while the visible Desktop PDF remains an old build. The v4 build
 script mitigates this by copying the same compiled PDF to
-\path{paper/final/best-of-n-llm-v3.pdf} and to the visible Desktop.
+\path{paper/final/best-of-n-llm-v4.pdf} and to the visible Desktop.
 
 Artifact failure mode 2: stale macros. If result artifacts change but
 manuscript numbers remain hard-coded, the paper can silently drift away from
-the evidence. The v3 script writes \path{v3_results_macros.tex}, and the
+the evidence. The v4 protocol script writes \path{v4_results_macros.tex}, and the
 paper source imports that file.
 
 Artifact failure mode 3: stale claim gates. If the gate report says a gate is
 missing but the prose says the claim is complete, the paper becomes
-misleading. The v3 audit checks that missing gates remain disclosed.
+misleading. The v4 protocol audit checks that missing gates remain disclosed.
 
 Artifact failure mode 4: hidden partial records. Raw caches below target depth
 can look like progress but should not count as held-out evidence. The gate
@@ -864,7 +866,7 @@ report counts only records at the required sample depth for the corresponding
 claim.
 
 Artifact failure mode 5: old title leakage. The repository was previously
-associated with broader inference-value wording. The v3 paper package should
+associated with broader inference-value wording. The v4 paper package should
 not show the old title as the submission identity. Historical code paths may
 remain in logs or comments, but the paper, metadata, README, and final audit
 must use the score-rank LLM evaluation identity.
@@ -874,24 +876,24 @@ must use the score-rank LLM evaluation identity.
 
 \begin{table}[t]
 \centering
-\caption{Claim trace used for the v3 manuscript.}
+\caption{Claim trace used for the v4 manuscript.}
 \label{tab:claim-trace}
 \begin{tabular}{L{0.27\linewidth}L{0.31\linewidth}L{0.30\linewidth}}
 \toprule
 Claim & Evidence source & Boundary \\
 \midrule
-Exact score-rank law has MAE \VThreeCoreMAE{} &
+Exact score-rank law has MAE \EvidenceCoreMAE{} &
 \path{results/du_aligned/du_experiment_results.json} &
 completed response-pool artifacts only \\
 AUC-only error grows at high $N$ &
-\path{results/v3_cached_evidence/moment_auc_gap_by_n.csv} &
+\path{results/v4_protocol_evidence/moment_auc_gap_by_n.csv} &
 not a claim that AUC is useless \\
 Expanded pilots show sample-complexity trend &
-\path{results/v3_cached_evidence/expanded_pilot_by_k_n.csv} &
+\path{results/v4_protocol_evidence/expanded_pilot_by_k_n.csv} &
 not tiny-pilot sufficiency \\
 Live judge improves over logprob on subset &
 \path{results/du_aligned/live_judge_score_summary.json} &
-\VThreeLiveJudgePairs{} completed pairs only \\
+\EvidenceLiveJudgePairs{} completed pairs only \\
 Cross-benchmark pilots have exact-law MAE 0 &
 \path{results/benchmarks/cross_benchmark_summary.csv} &
 four pilot families only \\
@@ -929,12 +931,12 @@ support the score-rank law but would drop any positive judge-score claim.
 The forecasting story would change if locked finite-pilot estimators failed at
 larger target depth. That would not invalidate exact response-pool evaluation.
 It would mean that estimating response-pool tails from small pilots is harder
-than the current pilot curves suggest. The v3 paper already leaves room for
+than the current pilot curves suggest. The v4 paper already leaves room for
 that outcome by treating tiny-pilot sufficiency as unsupported.
 
 The duplicate-risk conclusion would change if the manuscript drifted back to a
 generic title, generic first theorem, or architecture-free wrapper language
-without the LLM response-pool evidence. The current v3 version avoids that by
+without the LLM response-pool evidence. The current v4 version avoids that by
 making the evaluation target, artifacts, and claim gates specific.
 
 \section{Submission Decision Rationale}
@@ -1016,13 +1018,13 @@ Makes empirical scope auditable instead of rhetorical. \\
 \end{tabular}
 \end{table}
 
-The v3 artifact package follows this contract. The exact law is validated on
-\VThreeTriples{} conditional triples from the Du-aligned response pools. The
-held-out 4096-depth slice is reported as \VThreeHeldoutRecords{} completed
-records out of an intended \VThreeHeldoutRequiredRecords{} manifest, not as a
+The v4 artifact package follows this contract. The exact law is validated on
+\EvidenceTriples{} conditional triples from the Du-aligned response pools. The
+held-out 4096-depth slice is reported as \EvidenceHeldoutRecords{} completed
+records out of an intended \EvidenceHeldoutRequiredRecords{} manifest, not as a
 completed manifest. The cross-benchmark evidence is explicitly four pilot
-families, and the live-judge evidence is explicitly \VThreeLiveJudgePairs{}
-model-problem pairs with \VThreeLiveJudgeJudgments{} judgments. These numbers
+families, and the live-judge evidence is explicitly \EvidenceLiveJudgePairs{}
+model-problem pairs with \EvidenceLiveJudgeJudgments{} judgments. These numbers
 are not decorative metadata; they are part of the claim. If any one of them is
 removed, a reviewer can no longer tell whether a stated response-pool gain is
 an exact finite fact, a pilot trend, or an unfinished target.
@@ -1093,7 +1095,7 @@ record-level exact quantities and is the only ledger allowed to support exact
 claims. The second ledger stores model-level summaries and confidence or
 bootstrap intervals after record-level computation. The third ledger stores
 scope flags: missing records, excluded endpoints, grader failures, degenerate
-pools, and calibration-only artifacts. The v3 cached-evidence script
+pools, and calibration-only artifacts. The v4 protocol-evidence script
 implements this separation by writing conditional held-out records, benchmark
 family deltas, gate statuses, and macros as separate files. The build then
 imports the macros rather than retyping values in the manuscript.
@@ -1118,27 +1120,27 @@ from checked-in artifacts, but each one targets a real failure mode.
 
 \begin{enumerate}
 \item Recompute the exact law on the Du-aligned triples and confirm that the
-mean absolute error remains near \VThreeCoreMAE{}. This catches theorem-code
+mean absolute error remains near \EvidenceCoreMAE{}. This catches theorem-code
 mismatches, rank-order mistakes, and tie-handling drift.
 \item Recompute the AUC-only approximation at $N=48$ and compare it with the
-exact law. The expected failure is about \VThreeAucNFortyEightMAE{} MAE, not
+exact law. The expected failure is about \EvidenceAucNFortyEightMAE{} MAE, not
 zero. If the AUC baseline suddenly looks exact at high $N$, the test is
 probably no longer measuring the intended high-$N$ selector.
 \item Recompute the pooled baseline. It should remain worse than the
-conditional computation, with the v3 pooled MAE around \VThreePooledMAE{}.
+conditional computation, with the v4 pooled MAE around \EvidencePooledMAE{}.
 This catches accidental aggregation before conditioning.
 \item Sample the 4096-depth held-out slice and verify the boundary statement:
-the slice has \VThreeHeldoutRecords{} completed records, median correctness
-rate \VThreeHeldoutPMedian{}, and only
-\VThreeHeldoutCoveragePct{} of the intended manifest. The correct conclusion
+the slice has \EvidenceHeldoutRecords{} completed records, median correctness
+rate \EvidenceHeldoutPMedian{}, and only
+\EvidenceHeldoutCoveragePct{} of the intended manifest. The correct conclusion
 is scoped evidence, not manifest completion.
 \item Recreate the claim-gate figure and table. The result should preserve
-\VThreeGatePass{} passed gates and \VThreeGateMissing{} missing gates. A
+\EvidenceGatePass{} passed gates and \EvidenceGateMissing{} missing gates. A
 submission draft that deletes the missing gates is less reliable, not more
 polished.
 \item Compare live-judge and log-probability selection on the judged subset.
-The live-judge value at $N=48$ is \VThreeLiveJudgeNFortyEight{} versus
-\VThreeLogprobNFortyEight{} for log probability, but the claim remains a
+The live-judge value at $N=48$ is \EvidenceLiveJudgeNFortyEight{} versus
+\EvidenceLogprobNFortyEight{} for log probability, but the claim remains a
 subset result.
 \end{enumerate}
 
@@ -1203,43 +1205,41 @@ collection of representative responses and trustworthy labels.
 
 The final manuscript is only as reproducible as its archive. The build process
 therefore treats generated PDFs, figures, macros, and claim reports as a
-submission package rather than as disposable local state. The v3 contract is
+submission package rather than as disposable local state. The v4 contract is
 simple. The repository stores the source, scripts, checked-in cached evidence,
 and final PDF. The visible Desktop stores only the final versioned PDF for
 this paper. The source map points a fresh agent from the Desktop PDF to the
 local folder and GitHub repository. The GitHub repository name, local folder
 name, and Desktop PDF stem agree.
 
-\begin{table}[t]
-\centering
+\begin{center}
 \small
-\caption{Archive contract used for the v3 submission package.}
-\label{tab:archive-contract}
+\textbf{Table 14: Archive contract used for the v4 submission package.}\\[0.5ex]
 \begin{tabular}{p{0.25\linewidth}p{0.35\linewidth}p{0.28\linewidth}}
 \toprule
 Artifact & Required state & Audit reason \\
 \midrule
 Desktop PDF &
-\path{best-of-n-llm-v3.pdf} only for the current final artifact. &
+\path{best-of-n-llm-v4.pdf} only for the current final artifact. &
 Fresh sessions can find the final paper without stale drafts. \\
 Repository PDF &
-\path{paper/final/best-of-n-llm-v3.pdf}. &
+\path{paper/final/best-of-n-llm-v4.pdf}. &
 The pushed repository contains the same submission artifact as the Desktop. \\
 Source package &
-Versioned v3 source ZIP when packaging is requested. &
+Versioned v4 source ZIP when packaging is requested. &
 Submission upload can be recreated from repository state. \\
 Cached evidence &
-\path{results/v3_cached_evidence/summary.json} plus CSV ledgers and figures. &
+\path{results/v4_protocol_evidence/summary.json} plus CSV ledgers and figures. &
 Numeric manuscript claims can be traced without new API calls. \\
 Claim audit &
 A script-level audit that checks page count, stale names, gates, and hashes. &
 Prevents cosmetic rewrites from silently weakening the evidence boundary. \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{center}
 
 This contract is partly administrative, but it has scientific consequences.
-If the Desktop contains an older draft while the repository contains a v3
+If the Desktop contains an older draft while the repository contains a v4
 source tree, a fresh agent or reviewer can easily inspect the wrong paper. If
 the repository PDF and Desktop PDF have different hashes, there is no single
 submission artifact. If stale documentation still names an old generic theorem
@@ -1249,7 +1249,7 @@ from becoming invisible.
 
 The contract also constrains future improvements. A later v4 may add the full
 held-out manifest, additional benchmark families, or broader live-judge
-coverage. If so, it should not edit v3 numbers in place. It should generate a
+coverage. If so, it should not edit v4 numbers in place. It should generate a
 new evidence directory, new macros, a new final PDF name, and a new audit note.
 Versioned evidence is less glamorous than a single polished number, but it is
 what lets reviewers distinguish completed experiments from future ambition.

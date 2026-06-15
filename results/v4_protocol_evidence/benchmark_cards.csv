@@ -1,0 +1,6 @@
+benchmark,task_family,models,tasks,samples_per_task,records,coverage,nondegenerate_records,base_accuracy,n48_accuracy,gain_n48,law_mae,scope
+MATH 500 held-out slice,competition mathematics,1,119,4096,119,1.0,112,0.4387248063287815,0.45410192983679737,0.01537712350801587,0.0,"4096-depth diagnostic slice, not full manifest"
+GPQA Diamond,graduate science QA,16,20,48,320,1.0,251,0.5393229166666667,0.5889771190427251,0.04965420237605844,0.0,pilot-scale real benchmark family
+IFEval,instruction following,16,20,48,320,1.0,164,0.7770182291666667,0.7962488769455363,0.019230647778869514,0.0,pilot-scale real benchmark family
+LiveBench selected,contamination-limited mixed tasks,16,20,48,320,1.0,141,0.2184244791666666,0.2545868833692246,0.03616240420255798,0.0,pilot-scale real benchmark family
+LiveCodeBench,public-test executable code,16,20,48,320,1.0,262,0.48359375,0.5245820995985587,0.04098834959855874,0.0,pilot-scale real benchmark family

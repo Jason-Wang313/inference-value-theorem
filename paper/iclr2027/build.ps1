@@ -10,9 +10,9 @@ $UserProfile = [Environment]::GetFolderPath("UserProfile")
 $Downloads = Join-Path $UserProfile "Downloads"
 $OneDriveDesktop = Join-Path $UserProfile "OneDrive\Desktop"
 $Desktop = if (Test-Path $OneDriveDesktop) { $OneDriveDesktop } else { [Environment]::GetFolderPath("Desktop") }
-$PdfOut = Join-Path $Desktop "best-of-n-llm-v3.pdf"
-$RepoPdfOut = Join-Path $RepoRoot "paper\final\best-of-n-llm-v3.pdf"
-$ZipOut = Join-Path $Downloads "best-of-n-llm-v3-source.zip"
+$PdfOut = Join-Path $Desktop "best-of-n-llm-v4.pdf"
+$RepoPdfOut = Join-Path $RepoRoot "paper\final\best-of-n-llm-v4.pdf"
+$ZipOut = Join-Path $Downloads "best-of-n-llm-v4-source.zip"
 
 Push-Location $Root
 try {
@@ -31,7 +31,7 @@ try {
         }
     }
 
-    Invoke-Checked "python" @((Join-Path $RepoRoot "experiments\18_v3_cached_evidence.py"))
+    Invoke-Checked "python" @((Join-Path $RepoRoot "experiments\18_v4_protocol_evidence.py"))
 
     $latexmkWorks = $false
     $latexmkCmd = Get-Command latexmk -ErrorAction SilentlyContinue

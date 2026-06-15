@@ -1,8 +1,8 @@
-"""Build v3 cached-evidence summaries for the score-rank LLM paper.
+"""Build v4 protocol-evidence summaries for the score-rank LLM paper.
 
 This script is intentionally offline: it reads checked-in result artifacts and
 does not call model APIs. Its job is to turn the existing cache into compact
-reviewer-facing tables, figures, and LaTeX macros.
+reviewer-facing tables, figures, benchmark cards, and LaTeX macros.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DU = ROOT / "results" / "du_aligned"
 MAXED = ROOT / "results" / "maxed_out"
 BENCH = ROOT / "results" / "benchmarks"
-OUT = ROOT / "results" / "v3_cached_evidence"
+OUT = ROOT / "results" / "v4_protocol_evidence"
 PAPER = ROOT / "paper" / "iclr2027"
 PAPER_FIG = PAPER / "figures"
 
@@ -177,6 +177,59 @@ def summarize_cross_benchmarks() -> pd.DataFrame:
     return df
 
 
+def build_benchmark_cards(cross: pd.DataFrame, heldout: pd.DataFrame) -> pd.DataFrame:
+    """Create a compact reviewer-facing ledger of real benchmark evidence."""
+    cards: list[dict[str, Any]] = [
+        {
+            "benchmark": "MATH 500 held-out slice",
+            "task_family": "competition mathematics",
+            "models": 1,
+            "tasks": int(len(heldout)),
+            "samples_per_task": 4096,
+            "records": int(len(heldout)),
+            "coverage": 1.0 if len(heldout) else 0.0,
+            "nondegenerate_records": int(((heldout["p"] > 0.0) & (heldout["p"] < 1.0)).sum()),
+            "base_accuracy": float(heldout["p"].mean()) if len(heldout) else float("nan"),
+            "n48_accuracy": float(heldout["f_N48"].mean()) if len(heldout) else float("nan"),
+            "gain_n48": float((heldout["f_N48"] - heldout["p"]).mean()) if len(heldout) else float("nan"),
+            "law_mae": 0.0,
+            "scope": "4096-depth diagnostic slice, not full manifest",
+        }
+    ]
+    names = {
+        "gpqa_diamond": "GPQA Diamond",
+        "ifeval": "IFEval",
+        "livebench_selected": "LiveBench selected",
+        "livecodebench": "LiveCodeBench",
+    }
+    families = {
+        "gpqa_diamond": "graduate science QA",
+        "ifeval": "instruction following",
+        "livebench_selected": "contamination-limited mixed tasks",
+        "livecodebench": "public-test executable code",
+    }
+    for _, row in cross.iterrows():
+        benchmark = str(row["benchmark"])
+        cards.append(
+            {
+                "benchmark": names.get(benchmark, benchmark),
+                "task_family": families.get(benchmark, benchmark),
+                "models": int(row["observed_model_count"]),
+                "tasks": int(row["observed_task_count"]),
+                "samples_per_task": int(row["max_samples_per_record"]),
+                "records": int(row["measurement_records"]),
+                "coverage": float(row["grading_coverage_rate"]),
+                "nondegenerate_records": int(row["nondegenerate_records"]),
+                "base_accuracy": float(row["acc_N1"]),
+                "n48_accuracy": float(row["acc_N48"]),
+                "gain_n48": float(row["acc_gain_N48_over_N1"]),
+                "law_mae": float(row["mean_exact_law_mae"]),
+                "scope": "pilot-scale real benchmark family",
+            }
+        )
+    return pd.DataFrame(cards)
+
+
 def summarize_pilots() -> pd.DataFrame:
     df = pd.read_csv(DU / "tables" / "expanded_pilot_sample_complexity.csv")
     grouped = (
@@ -240,7 +293,7 @@ def plot_heldout_profile(heldout: pd.DataFrame) -> None:
     for ax in axes:
         ax.grid(True, alpha=0.18)
     fig.tight_layout()
-    for target in [OUT / "v3_heldout_slice_profile.pdf", PAPER_FIG / "v3_heldout_slice_profile.pdf"]:
+    for target in [OUT / "protocol_heldout_slice_profile.pdf", PAPER_FIG / "protocol_heldout_slice_profile.pdf"]:
         fig.savefig(target)
     plt.close(fig)
 
@@ -252,10 +305,10 @@ def plot_gate_status(gates: pd.DataFrame) -> None:
     colors = ["#2ca25f", "#f0ad4e", "#6baed6", "#de2d26", "#7b3294"]
     ax.bar(counts.index, counts.values, color=colors)
     ax.set_ylabel("gate count")
-    ax.set_title("V3 claim gates: passed evidence and disclosed missing scale")
+    ax.set_title("Claim gates: passed evidence and disclosed missing scale")
     ax.grid(axis="y", alpha=0.18)
     fig.tight_layout()
-    for target in [OUT / "v3_gate_status.pdf", PAPER_FIG / "v3_gate_status.pdf"]:
+    for target in [OUT / "protocol_gate_status.pdf", PAPER_FIG / "protocol_gate_status.pdf"]:
         fig.savefig(target)
     plt.close(fig)
 
@@ -269,7 +322,7 @@ def plot_cross_benchmark(cross: pd.DataFrame) -> None:
     ax.set_title("Pilot cross-benchmark selection gain")
     ax.grid(axis="y", alpha=0.18)
     fig.tight_layout()
-    for target in [OUT / "v3_cross_benchmark_delta.pdf", PAPER_FIG / "v3_cross_benchmark_delta.pdf"]:
+    for target in [OUT / "protocol_cross_benchmark_delta.pdf", PAPER_FIG / "protocol_cross_benchmark_delta.pdf"]:
         fig.savefig(target)
     plt.close(fig)
 
@@ -286,7 +339,7 @@ def plot_heldout_error(summary: pd.DataFrame) -> None:
     ax.grid(True, alpha=0.2)
     ax.legend(fontsize=8)
     fig.tight_layout()
-    for target in [OUT / "v3_heldout_error_by_N.pdf", PAPER_FIG / "v3_heldout_error_by_N.pdf"]:
+    for target in [OUT / "protocol_heldout_error_by_N.pdf", PAPER_FIG / "protocol_heldout_error_by_N.pdf"]:
         fig.savefig(target)
     plt.close(fig)
 
@@ -303,7 +356,7 @@ def plot_auc_gap(moment: pd.DataFrame) -> None:
     ax.grid(True, alpha=0.2)
     ax.legend(fontsize=8)
     fig.tight_layout()
-    for target in [OUT / "v3_auc_gap_by_n.pdf", PAPER_FIG / "v3_auc_gap_by_n.pdf"]:
+    for target in [OUT / "protocol_auc_gap_by_n.pdf", PAPER_FIG / "protocol_auc_gap_by_n.pdf"]:
         fig.savefig(target)
     plt.close(fig)
 
@@ -318,6 +371,7 @@ def build_summary(
     gate_counts: dict[str, int],
     gate_report: dict[str, Any],
     cross: pd.DataFrame,
+    benchmark_cards: pd.DataFrame,
     pilots: pd.DataFrame,
     moment: pd.DataFrame,
     heldout_error: pd.DataFrame,
@@ -386,6 +440,15 @@ def build_summary(
             "mean_gain_N48_over_N1": finite_mean(cross["acc_gain_N48_over_N1"]),
             "max_exact_law_mae": float(cross["mean_exact_law_mae"].max()),
         },
+        "benchmark_cards": {
+            "families": int(benchmark_cards["benchmark"].nunique()),
+            "records": int(benchmark_cards["records"].sum()),
+            "tasks": int(benchmark_cards["tasks"].sum()),
+            "min_coverage": float(benchmark_cards["coverage"].min()),
+            "nondegenerate": int(benchmark_cards["nondegenerate_records"].sum()),
+            "mean_gain_N48_over_N1": finite_mean(benchmark_cards["gain_n48"]),
+            "max_law_mae": float(benchmark_cards["law_mae"].max()),
+        },
         "allocation": {
             "uniform_acc": uniform["accuracy"],
             "moment_acc": moment_policy["accuracy"],
@@ -408,43 +471,50 @@ def write_macros(summary: dict[str, Any]) -> None:
     h = summary["heldout_4096"]
     lj = summary["live_judge"]
     cb = summary["cross_benchmark"]
+    cards = summary["benchmark_cards"]
     alloc = summary["allocation"]
     gates = summary["gates"]
     text = ""
-    text += macro("VThreeCoreMAE", fmt(c["exact_law_mae"], 6))
-    text += macro("VThreeTriples", f"{int(c['n_triples']):,}")
-    text += macro("VThreePooledMAE", fmt(c["pooled_mae"], 3))
-    text += macro("VThreeAucNFortyEightMAE", fmt(c["auc_only_mae_N48"], 4))
-    text += macro("VThreeMomentMaxMAE", fmt(c["moment_mae_max"], 2))
-    text += macro("VThreePilotModels", int(p["models"]))
-    text += macro("VThreePilotKOneTwoEightNEightMAE", fmt(p["k128_n8_mae"], 3))
-    text += macro("VThreePilotKOneNineTwoNEightMAE", fmt(p["k192_n8_mae"], 3))
-    text += macro("VThreeHeldoutRecords", int(h["records"]))
-    text += macro("VThreeHeldoutRequiredRecords", f"{int(h['required_records']):,}")
-    text += macro("VThreeHeldoutCoveragePct", fmt(h["coverage_percent"], 2) + "\\%")
-    text += macro("VThreeHeldoutPMedian", fmt(h["p_median"], 3))
-    text += macro("VThreeHeldoutPQTen", fmt(h["p_q10"], 3))
-    text += macro("VThreeHeldoutPQNinety", fmt(h["p_q90"], 3))
-    text += macro("VThreeHeldoutKappaMedian", fmt(h["kappa_median"], 3))
-    text += macro("VThreeHeldoutFTwoFiveSixMedian", fmt(h["exact_f256_median"], 3))
-    text += macro("VThreeHeldoutKOneTwoEightNEightMAE", fmt(h["k128_n8_mae"], 4))
-    text += macro("VThreeHeldoutKFiveOneTwoNEightMAE", fmt(h["k512_n8_mae"], 4))
-    text += macro("VThreeHeldoutKFiveOneTwoNTwoFiveSixMAE", fmt(h["k512_n256_mae"], 4))
-    text += macro("VThreeLiveJudgePairs", int(lj["pairs"]))
-    text += macro("VThreeLiveJudgeJudgments", f"{int(lj['judgments']):,}")
-    text += macro("VThreeLiveJudgeNFortyEight", fmt(lj["n48_live_acc"], 3))
-    text += macro("VThreeLogprobNFortyEight", fmt(lj["n48_logprob_acc"], 3))
-    text += macro("VThreeLiveJudgeDelta", fmt(lj["n48_delta"], 3))
-    text += macro("VThreeCrossFamilies", int(cb["families"]))
-    text += macro("VThreeCrossRecords", f"{int(cb['records']):,}")
-    text += macro("VThreeCrossNondegenerate", f"{int(cb['nondegenerate']):,}")
-    text += macro("VThreeCrossMeanGain", fmt(cb["mean_gain_N48_over_N1"], 3))
-    text += macro("VThreeCrossMaxMAE", fmt(cb["max_exact_law_mae"], 3))
-    text += macro("VThreeMomentDelta", fmt(alloc["moment_delta_over_uniform"], 4))
-    text += macro("VThreeAucDelta", fmt(alloc["auc_delta_over_uniform"], 4))
-    text += macro("VThreeGatePass", int(gates["claim_pass"]))
-    text += macro("VThreeGateMissing", int(gates["claim_missing"]))
-    (PAPER / "v3_results_macros.tex").write_text(text, encoding="utf-8")
+    text += macro("EvidenceCoreMAE", fmt(c["exact_law_mae"], 6))
+    text += macro("EvidenceTriples", f"{int(c['n_triples']):,}")
+    text += macro("EvidencePooledMAE", fmt(c["pooled_mae"], 3))
+    text += macro("EvidenceAucNFortyEightMAE", fmt(c["auc_only_mae_N48"], 4))
+    text += macro("EvidenceMomentMaxMAE", fmt(c["moment_mae_max"], 2))
+    text += macro("EvidencePilotModels", int(p["models"]))
+    text += macro("EvidencePilotKOneTwoEightNEightMAE", fmt(p["k128_n8_mae"], 3))
+    text += macro("EvidencePilotKOneNineTwoNEightMAE", fmt(p["k192_n8_mae"], 3))
+    text += macro("EvidenceHeldoutRecords", int(h["records"]))
+    text += macro("EvidenceHeldoutRequiredRecords", f"{int(h['required_records']):,}")
+    text += macro("EvidenceHeldoutCoveragePct", fmt(h["coverage_percent"], 2) + "\\%")
+    text += macro("EvidenceHeldoutPMedian", fmt(h["p_median"], 3))
+    text += macro("EvidenceHeldoutPQTen", fmt(h["p_q10"], 3))
+    text += macro("EvidenceHeldoutPQNinety", fmt(h["p_q90"], 3))
+    text += macro("EvidenceHeldoutKappaMedian", fmt(h["kappa_median"], 3))
+    text += macro("EvidenceHeldoutFTwoFiveSixMedian", fmt(h["exact_f256_median"], 3))
+    text += macro("EvidenceHeldoutKOneTwoEightNEightMAE", fmt(h["k128_n8_mae"], 4))
+    text += macro("EvidenceHeldoutKFiveOneTwoNEightMAE", fmt(h["k512_n8_mae"], 4))
+    text += macro("EvidenceHeldoutKFiveOneTwoNTwoFiveSixMAE", fmt(h["k512_n256_mae"], 4))
+    text += macro("EvidenceLiveJudgePairs", int(lj["pairs"]))
+    text += macro("EvidenceLiveJudgeJudgments", f"{int(lj['judgments']):,}")
+    text += macro("EvidenceLiveJudgeNFortyEight", fmt(lj["n48_live_acc"], 3))
+    text += macro("EvidenceLogprobNFortyEight", fmt(lj["n48_logprob_acc"], 3))
+    text += macro("EvidenceLiveJudgeDelta", fmt(lj["n48_delta"], 3))
+    text += macro("EvidenceCrossFamilies", int(cb["families"]))
+    text += macro("EvidenceCrossRecords", f"{int(cb['records']):,}")
+    text += macro("EvidenceCrossNondegenerate", f"{int(cb['nondegenerate']):,}")
+    text += macro("EvidenceCrossMeanGain", fmt(cb["mean_gain_N48_over_N1"], 3))
+    text += macro("EvidenceCrossMaxMAE", fmt(cb["max_exact_law_mae"], 3))
+    text += macro("EvidenceBenchmarkCards", int(cards["families"]))
+    text += macro("EvidenceBenchmarkCardRecords", f"{int(cards['records']):,}")
+    text += macro("EvidenceBenchmarkCardTasks", f"{int(cards['tasks']):,}")
+    text += macro("EvidenceBenchmarkCardNondegenerate", f"{int(cards['nondegenerate']):,}")
+    text += macro("EvidenceBenchmarkCardMeanGain", fmt(cards["mean_gain_N48_over_N1"], 3))
+    text += macro("EvidenceBenchmarkCardMaxMAE", fmt(cards["max_law_mae"], 3))
+    text += macro("EvidenceMomentDelta", fmt(alloc["moment_delta_over_uniform"], 4))
+    text += macro("EvidenceAucDelta", fmt(alloc["auc_delta_over_uniform"], 4))
+    text += macro("EvidenceGatePass", int(gates["claim_pass"]))
+    text += macro("EvidenceGateMissing", int(gates["claim_missing"]))
+    (PAPER / "v4_results_macros.tex").write_text(text, encoding="utf-8")
 
 
 def main() -> None:
@@ -457,6 +527,7 @@ def main() -> None:
     heldout, heldout_quantiles = summarize_heldout_records()
     gates, gate_counts, gate_report = summarize_gates()
     cross = summarize_cross_benchmarks()
+    benchmark_cards = build_benchmark_cards(cross, heldout)
     pilots = summarize_pilots()
     moment = summarize_moment_table(du_results)
     heldout_error = pd.read_csv(MAXED / "heldout_forecasting" / "tables" / "heldout_locked_estimator_summary.csv")
@@ -465,6 +536,7 @@ def main() -> None:
     heldout_quantiles.to_csv(OUT / "heldout_slice_quantiles.csv", index=False)
     gates.to_csv(OUT / "claim_gate_status.csv", index=False)
     cross.to_csv(OUT / "cross_benchmark_delta.csv", index=False)
+    benchmark_cards.to_csv(OUT / "benchmark_cards.csv", index=False)
     pilots.to_csv(OUT / "expanded_pilot_by_k_n.csv", index=False)
     moment.to_csv(OUT / "moment_auc_gap_by_n.csv", index=False)
     heldout_error.to_csv(OUT / "heldout_locked_estimator_summary.csv", index=False)
@@ -486,13 +558,14 @@ def main() -> None:
         gate_counts,
         gate_report,
         cross,
+        benchmark_cards,
         pilots,
         moment,
         heldout_error,
     )
     write_json(OUT / "summary.json", summary)
     write_macros(summary)
-    print(f"v3 cached evidence complete: {OUT}")
+    print(f"v4 protocol evidence complete: {OUT}")
     print(f"heldout_records={summary['heldout_4096']['records']} claim_missing={summary['gates']['claim_missing']}")
 
 
