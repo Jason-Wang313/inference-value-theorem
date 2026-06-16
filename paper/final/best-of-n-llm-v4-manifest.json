@@ -1,0 +1,32 @@
+{
+  "paper": "best-of-n-llm-v4.pdf",
+  "source_folder": "C:\\Users\\wangz\\Downloads\\best-of-n-llm",
+  "github_remote": "https://github.com/Jason-Wang313/best-of-n-llm.git",
+  "repository_pdf": "paper/final/best-of-n-llm-v4.pdf",
+  "desktop_pdf": "C:\\Users\\wangz\\OneDrive\\Desktop\\best-of-n-llm-v4.pdf",
+  "sha256": "B6D00CF7FEADF85DF2DFA15E95220CCCDD1BB43B375F3041F083C4C53AE185E9",
+  "pages": 26,
+  "verified_on": "2026-06-16",
+  "checks": {
+    "py_compile": "passed",
+    "protocol_evidence_regeneration": "passed",
+    "claim_audit": "submission audit complete: best-of-n-llm v4",
+    "latex_final_log_scan": "passed",
+    "repo_desktop_hash_match": true,
+    "transient_build_pdf_removed": true,
+    "pdf_render": "all 26 pages rendered",
+    "visual_qa": "pages 1, 4, 6, 9, 15, 22, and 26 inspected"
+  },
+  "evidence_summary": {
+    "law_triples": 35964,
+    "exact_law_mae": 0.0006223688355332208,
+    "auc_only_mae_n48": 0.08209840370442219,
+    "benchmark_card_families": 5,
+    "cross_benchmark_families": 4,
+    "heldout_4096_records": 119,
+    "live_judge_pairs": 135,
+    "live_judge_judgments": 6480,
+    "claim_pass": 8,
+    "claim_missing": 4
+  }
+}

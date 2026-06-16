@@ -42,7 +42,11 @@ try {
     }
     if (-not $latexmkWorks) {
         Invoke-Checked "pdflatex" @("-interaction=nonstopmode", "-halt-on-error", "main.tex")
-        Invoke-Checked "bibtex" @("main")
+        $AuxPath = Join-Path $Root "main.aux"
+        $NeedsBibtex = (Test-Path $AuxPath) -and (Select-String -LiteralPath $AuxPath -Pattern "\\bibdata" -Quiet)
+        if ($NeedsBibtex) {
+            Invoke-Checked "bibtex" @("main")
+        }
         Invoke-Checked "pdflatex" @("-interaction=nonstopmode", "-halt-on-error", "main.tex")
         Invoke-Checked "pdflatex" @("-interaction=nonstopmode", "-halt-on-error", "main.tex")
     }
@@ -52,6 +56,7 @@ try {
     }
     Copy-Item -LiteralPath (Join-Path $Root "main.pdf") -Destination $PdfOut -Force
     Copy-Item -LiteralPath (Join-Path $Root "main.pdf") -Destination $RepoPdfOut -Force
+    Remove-Item -LiteralPath (Join-Path $Root "main.pdf") -Force -ErrorAction SilentlyContinue
 
     if ($Package) {
         if (Test-Path $ZipOut) {
