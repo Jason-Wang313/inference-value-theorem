@@ -4,18 +4,20 @@
   "github_remote": "https://github.com/Jason-Wang313/best-of-n-llm.git",
   "repository_pdf": "paper/final/best-of-n-llm-v4.pdf",
   "desktop_pdf": "C:\\Users\\wangz\\OneDrive\\Desktop\\best-of-n-llm-v4.pdf",
-  "sha256": "B6D00CF7FEADF85DF2DFA15E95220CCCDD1BB43B375F3041F083C4C53AE185E9",
+  "sha256": "5B517B673EAA75437E071DA52ED27D80A391A2203C9D2A6866D61D77B4B06C02",
   "pages": 26,
-  "verified_on": "2026-06-16",
+  "verified_on": "2026-06-19",
   "checks": {
     "py_compile": "passed",
     "protocol_evidence_regeneration": "passed",
+    "boxed_link_rebuild_from_frozen_artifacts": "passed",
     "claim_audit": "submission audit complete: best-of-n-llm v4",
     "latex_final_log_scan": "passed",
     "repo_desktop_hash_match": true,
     "transient_build_pdf_removed": true,
-    "pdf_render": "all 26 pages rendered",
-    "visual_qa": "pages 1, 4, 6, 9, 15, 22, and 26 inspected"
+    "pdf_annotation_link_audit": "27 annotations: 14 green citation boxes, 13 red internal-reference boxes; all use 1pt visible borders",
+    "pdf_render": "selected high-risk pages rendered at moderate DPI",
+    "visual_qa": "pages 1, 2, 3, 4, 5, 6, 7, 9, 15, 22, and 26 inspected"
   },
   "evidence_summary": {
     "law_triples": 35964,

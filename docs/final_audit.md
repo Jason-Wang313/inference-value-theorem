@@ -76,13 +76,17 @@ gates, and duplicate-risk boundary are all explicit and locally auditable.
 
 - `python -m py_compile config.py experiments\15_paper_claims_status.py experiments\16_cross_benchmark.py experiments\18_v4_protocol_evidence.py scripts\run_v4_claim_audit.py`: passed.
 - Protocol evidence regeneration via `paper\iclr2027\build.ps1 -Clean`: passed.
+- Boxed-link PDF rebuild from frozen paper artifacts: passed.
 - Claim audit: `submission audit complete: best-of-n-llm v4`.
 - Final LaTeX log scan: no undefined citations, unresolved references, rerun
   requests, overfull boxes, or hyperref/natbib blocking warnings.
 - Final PDF page count: 26 pages.
 - Final PDF SHA256:
-  `B6D00CF7FEADF85DF2DFA15E95220CCCDD1BB43B375F3041F083C4C53AE185E9`
-- Visual QA inspected rendered pages 1, 4, 6, 9, 15, 22, and 26.
+  `5B517B673EAA75437E071DA52ED27D80A391A2203C9D2A6866D61D77B4B06C02`
+- PDF annotation audit found 27 link annotations: 14 green citation boxes and
+  13 red internal-reference boxes. All annotations use 1pt visible borders
+  matching the VLA role-model profile.
+- Visual QA inspected rendered pages 1, 2, 3, 4, 5, 6, 7, 9, 15, 22, and 26.
 
 ## Final PDF Path
 
